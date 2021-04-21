@@ -125,3 +125,16 @@ export const getContinuosDist = async (varsSelected, anioSelected) => {
     console.log(error);
   }
 };
+
+export const groupByYearsVar = async (aniosSelected, varsSelected) => {
+  try {
+    const data = await axios.post("/api/medidas/group", {
+      years: aniosSelected,
+      vars: varsSelected,
+    });
+
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -10,15 +10,17 @@ import {
   getDictByVar,
   getDiscreteDist,
   getContinuosDist,
+  groupByYearsVar,
 } from "../actions/medidasAction";
 import CanvasJSReact from "../assets/canvasjs.react";
 import Loading from "./Loading";
 import Navbar from "./Navbar";
+import GroupedBar from "../components/GroupedBar";
 // import * as d3 from "d3";
 // import { JSONToHTMLTable } from "@kevincobain2000/json-to-html-table";
 
 const Home = () => {
-  const [data, setData] = useState([]);
+  // Estados de interacción con el usuario
   const [etapas, setEtapas] = useState([]);
   const [etapaSelected, setEtapaSelected] = useState("");
   const [temasInteres, setTemas] = useState([]);
@@ -27,6 +29,9 @@ const Home = () => {
   const [aniosSelected, setAniosSelected] = useState([]);
   const [variables, setVariables] = useState([]);
   const [varsSelected, setVarsSelected] = useState([]);
+
+  // Estados para gráficas y datos de visualizaciones
+  const [data, setData] = useState([]);
   const [dataBar, setDataBar] = useState([]);
   const [dataPie, setDataPie] = useState([]);
   const [dataDist, setDataDist] = useState([]);
@@ -38,10 +43,41 @@ const Home = () => {
   const [error, setError] = useState(false);
   const [tipoData, settipoData] = useState("ninguno");
   const [lineType, setLineType] = useState("line");
+  const [groupData, setGroupData] = useState([]);
 
   var CanvasJS = CanvasJSReact.CanvasJS;
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+  // Definición parámetros para gráfica de datos agrupados por año y variable
+  // Conjunto de datos
+  const datasetGroup = {
+    labels: valores.map((valor) => valor.valor),
+    datasets: groupData,
+  };
+
+  // Opciones del gráfico
+  const optionsGroup = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: "Custom Chart Title",
+      },
+    },
+    responsive: true,
+  };
+
+  // Definición parámetros para gráfica de datos continuos (una variable)
+  // Configuración del gráfico
   const optionsContinuo = {
     animationEnabled: true,
     exportEnabled: true,
@@ -82,6 +118,8 @@ const Home = () => {
     ],
   };
 
+  // Definición parámetros para gráfica de datos discretos (una variable)
+  // Configuración del gráfico
   const optionsDiscreto = {
     animationEnabled: true,
     exportEnabled: true,
@@ -120,6 +158,8 @@ const Home = () => {
     ],
   };
 
+  // Definición parámetros para gráfica de datos ordinales y nominales (una variable)
+  // Configuración del gráfico
   const optionsNominalOrdinal = {
     animationEnabled: true,
     exportEnabled: true,
@@ -152,6 +192,7 @@ const Home = () => {
     ],
   };
 
+  // Define las unidades de medida de los datos dependiendo de la variable seleccionada
   const getDataUnits = () => {
     if (varsSelected[0].label.includes("peso")) {
       setDataUnits(" (kg)");
@@ -161,6 +202,8 @@ const Home = () => {
       setDataUnits(" (días)");
     } else if (varsSelected[0].label.includes("gestacional")) {
       setDataUnits(" (semana)");
+    } else if (varsSelected[0].label.includes("edad")) {
+      setDataUnits(" (años)");
     }
   };
 
@@ -170,11 +213,13 @@ const Home = () => {
     setEtapas(data);
   };
 
+  // Fetch de los temas de interés
   const getTemas = async () => {
     const data = await getTopics();
     setTemas(data);
   };
 
+  // Fetch de query principal de datos
   const getDatos = useCallback(async () => {
     if (
       variables.length > 0 ||
@@ -217,48 +262,60 @@ const Home = () => {
             }
             setDataBar(dataChart);
           } else {
-            var split = varsSelected[0].value.split(".");
-            var first = split[0];
-            var second = split[1];
+            if (aniosSelected.length === 1) {
+              var split = varsSelected[0].value.split(".");
+              var first = split[0];
+              var second = split[1];
 
-            for (let i = 0; i < values.length; i++) {
-              if (fields[i] === values[i]["key"]) {
-                dataChart.push({
+              for (let i = 0; i < values.length; i++) {
+                if (fields[i] === values[i]["key"]) {
+                  dataChart.push({
+                    label: values[i]["valor"],
+                    y: varsSelected[0].value.includes(".")
+                      ? data
+                          .filter((obj) => !!obj[first])
+                          .filter(
+                            (obj) => obj[first][second] === values[i]["key"]
+                          ).length
+                      : data.filter(
+                          (obj) =>
+                            obj[varsSelected[0].value] === values[i]["key"]
+                        ).length,
+                  });
+                }
+              }
+
+              for (let i = 0; i < values.length; i++) {
+                var porcentaje = varsSelected[0].value.includes(".")
+                  ? (data
+                      .filter((obj) => !!obj[first])
+                      .filter((obj) => obj[first][second] === values[i]["key"])
+                      .length /
+                      total) *
+                    100
+                  : (data.filter(
+                      (obj) => obj[varsSelected[0].value] === values[i]["key"]
+                    ).length /
+                      total) *
+                    100;
+                dataPie.push({
                   label: values[i]["valor"],
-                  y: varsSelected[0].value.includes(".")
-                    ? data
-                        .filter((obj) => !!obj[first])
-                        .filter(
-                          (obj) => obj[first][second] === values[i]["key"]
-                        ).length
-                    : data.filter(
-                        (obj) => obj[varsSelected[0].value] === values[i]["key"]
-                      ).length,
+                  y: Math.round(porcentaje * 100) / 100,
                 });
               }
-            }
+              setDataBar(dataChart);
+              setDataPie(dataPie);
+              getDataUnits();
+            } else {
+              // Mostrar gráfico agrupado por años
 
-            for (let i = 0; i < values.length; i++) {
-              var porcentaje = varsSelected[0].value.includes(".")
-                ? (data
-                    .filter((obj) => !!obj[first])
-                    .filter((obj) => obj[first][second] === values[i]["key"])
-                    .length /
-                    total) *
-                  100
-                : (data.filter(
-                    (obj) => obj[varsSelected[0].value] === values[i]["key"]
-                  ).length /
-                    total) *
-                  100;
-              dataPie.push({
-                label: values[i]["valor"],
-                y: Math.round(porcentaje * 100) / 100,
-              });
+              const groupedData = await groupByYearsVar(
+                aniosSelected.map((anios) => anios.value),
+                varsSelected.map((vars) => vars.value)
+              );
+
+              setGroupData(groupedData);
             }
-            setDataBar(dataChart);
-            setDataPie(dataPie);
-            getDataUnits();
           }
         } else {
           setError(true);
@@ -287,11 +344,13 @@ const Home = () => {
     }
   }, [aniosSelected, etapaSelected, temaSelected, varsSelected]);
 
+  // Fetch de los años
   const getAnios = async () => {
     const data = await getYears();
     setAnios(data);
   };
 
+  // Fetch de las variables de los datos
   const getVariables = async () => {
     const data = await getVars(etapaSelected, temaSelected);
     const groupsNominal = [];
@@ -321,10 +380,14 @@ const Home = () => {
     setVariables(data);
   };
 
+  //Funciones de interacción
+
+  // Define el tipo de gráfico para datos nominales y ordinales (pie o bar)
   const defineChart = (event) => {
     setTipoGraph(event.target.value);
   };
-  // Clean fields of selects
+
+  // Vacía los campos de los selects y de los estados relacionados con los datos
   const cleanFields = () => {
     setEtapaSelected("");
     setTemaSelected([]);
@@ -337,8 +400,10 @@ const Home = () => {
     setDataBar([]);
     setDataDist([]);
     setDataUnits("");
+    setGroupData([]);
   };
 
+  // Determina los tipos de datos para saber qué graficar
   const defineData = (valueSelected) => {
     if (valueSelected.tipo === "nominal") {
       settipoData("nominal");
@@ -351,11 +416,12 @@ const Home = () => {
     }
   };
 
+  // Define el tipo de gráfico para datos nominales
   const defineLineType = (event) => {
     setLineType(event.target.value);
   };
 
-  // Handlers for Selectes
+  // Handlers para los Selects
   const onChangeEtapa = (selectedOption) => {
     setEtapaSelected(selectedOption);
     setError(false);
@@ -376,6 +442,7 @@ const Home = () => {
     defineData(selectedOption);
   };
 
+  // UseEffect
   useEffect(() => {
     getAnios();
     getVariables();
@@ -383,6 +450,7 @@ const Home = () => {
     getTemas();
   }, [temaSelected, etapaSelected, aniosSelected]);
 
+  // Render
   return (
     <div className="home">
       <Navbar />
@@ -394,17 +462,16 @@ const Home = () => {
         </div>
         <div className="row pt-2">
           <p className="text-start text-justify">
-            A continuación encontrará un panel de busqueda para filtrar los
+            A continuación encontrará un panel de búsqueda para filtrar los
             datos por etapa, años, temas de interés y variables. Al filtrar los
             datos se podrá ver gráficamente el comportamiento de las variables
             seleccionadas. Estas se ajustarán dependiendo del tipo de variable y
             cantidad seleccionadas, por lo que pueden generarse una o más
-            gráficas. Los datos que tienen valor cero (0) significan que no
-            tienen un valor ingresado (vacíos).
+            gráficas. Se pueden comparar las variables por diferentes años
           </p>
         </div>
         <div className="row pt-4">
-          <div className="col-2">
+          <div className="col-lg-2 col-md-4 col-sm-6">
             <h2 className="text-start">Etapa</h2>
             <Select
               placeholder="Select..."
@@ -414,7 +481,7 @@ const Home = () => {
               onChange={onChangeEtapa}
             />
           </div>
-          <div className="col-2">
+          <div className="col-lg-2 col-md-4 col-sm-6">
             <h2 className="text-start">Años</h2>
             <Select
               className="basic-single text-start"
@@ -424,7 +491,7 @@ const Home = () => {
               onChange={onChangeAnios}
             />
           </div>
-          <div className="col-3">
+          <div className="col-lg-3 col-md-6 col-sm-8">
             <h2 className="text-start">Temas de interés</h2>
             <Select
               className="basic-single text-start"
@@ -434,7 +501,7 @@ const Home = () => {
               onChange={onChangeTema}
             />
           </div>
-          <div className="col-3">
+          <div className="col-lg-3 col-md-6 col-sm-8">
             <h2 className="text-start">Variables</h2>
             <Select
               className="basic-single text-start"
@@ -444,7 +511,7 @@ const Home = () => {
               onChange={onChangeVars}
             />
           </div>
-          <div className="col-2 align-self-end">
+          <div className="col-lg-2 col-md-4 col-sm-6 align-self-end">
             <div className="row">
               <div className="col-6">
                 {" "}
@@ -457,44 +524,73 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="row pt-3 text-center">
+        <div className="row pt-3">
           {error === false ? (
             clicked === true ? (
               data && data.length > 0 ? (
                 <div>
-                  <h4>
+                  <h6 className="text-start info-tag col-6">
                     Cantidad de datos: <b>{data.length} registros</b>
-                  </h4>
-                  <h4>
+                  </h6>
+                  <h6 className="text-start info-tag col-6">
                     Cantidad de datos que contienen la variable:{" "}
                     <b>
                       {" "}
                       {varsSelected.length > 0
                         ? tipoData === "nominal" || tipoData === "ordinal"
-                          ? dataBar.reduce((a, b) => a + (b["y"] || 0), 0)
+                          ? aniosSelected.length === 1
+                            ? dataBar.reduce((a, b) => a + (b["y"] || 0), 0)
+                            : !varsSelected[0].value.includes(".")
+                            ? data.filter(
+                                (obj) => obj[varsSelected[0].value] != null
+                              ).length
+                            : data
+                                .filter(
+                                  (obj) =>
+                                    !!obj[varsSelected[0].value.split(".")[0]]
+                                )
+                                .filter(
+                                  (obj) =>
+                                    obj[varsSelected[0].value.split(".")[0]][
+                                      varsSelected[0].value.split(".")[1]
+                                    ] != null
+                                ).length
                           : dataDist.reduce((a, b) => a + (b["y"] || 0), 0)
                         : "N/A"}{" "}
                       registros
                     </b>
-                  </h4>
+                  </h6>
                   {tipoData === "nominal" || tipoData === "ordinal" ? (
-                    <div className="graph pt-4">
-                      <CanvasJSChart
-                        options={optionsNominalOrdinal}
-                        /* onRef={ref => this.chart = ref} */
-                      />
-                      <div className="pt-4">
-                        {" "}
-                        <select onChange={defineChart}>
-                          <option name="column" id="column" value="column">
-                            Bar chart
-                          </option>
-                          <option name="pie" id="pie" value="pie">
-                            Pie graph
-                          </option>
-                        </select>
+                    aniosSelected && aniosSelected.length === 1 ? (
+                      <div className="graph pt-4">
+                        <CanvasJSChart
+                          options={optionsNominalOrdinal}
+                          /* onRef={ref => this.chart = ref} */
+                        />
+                        <div className="pt-4">
+                          {" "}
+                          <select onChange={defineChart}>
+                            <option name="column" id="column" value="column">
+                              Bar chart
+                            </option>
+                            <option name="pie" id="pie" value="pie">
+                              Pie graph
+                            </option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="row pt-4 text-center pb-4">
+                        <h3>
+                          Gráfica {varsSelected[0].value} comparada en los años:{" "}
+                          {aniosSelected.map((anios) => anios.label).join(",")}
+                        </h3>{" "}
+                        <GroupedBar
+                          data={datasetGroup}
+                          options={optionsGroup}
+                        />
+                      </div>
+                    )
                   ) : tipoData === "discreto" ? (
                     <div className="graph pt-4">
                       <CanvasJSChart
