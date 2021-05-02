@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import logo from "../assets/logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,6 +27,21 @@ const Navbar = () => {
           </a>
           <div className="collapse navbar-collapse" id="Navbar">
             <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <Link to="/" className="nav-link link">
+                  Inicio
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/rciu" className="nav-link link">
+                  Análisis RCIU
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/crecimiento" className="nav-link link">
+                  Análisis Crecimiento
+                </Link>
+              </li>
               <li className="nav-item">
                 <a
                   href="https://twitter.com/fundcanguro?lang=es"

@@ -119,7 +119,6 @@ export const getContinuosDist = async (varsSelected, anioSelected) => {
       },
     });
 
-    console.log(res.data);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -134,6 +133,58 @@ export const groupByYearsVar = async (aniosSelected, varsSelected) => {
     });
 
     return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const groupByYearsVarNumbers = async (aniosSelected, varsSelected) => {
+  try {
+    const data = await axios.post("/api/medidas/groupN", {
+      years: aniosSelected,
+      vars: varsSelected,
+    });
+
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getValuesByVarYears = async (aniosSelected, varSelected) => {
+  try {
+    const data = await axios.post("/api/medidas/queryVars", {
+      years: aniosSelected,
+      var: varSelected,
+    });
+
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getParallelCoordinates = async (year, tipoRCIU, etapa) => {
+  try {
+    const res = await axios.get("/api/medidas/parallel", {
+      params: {
+        year: year,
+        rciu: tipoRCIU,
+        etapa: etapa,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getParallelCoordinatesVars = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/parallelVars`);
+
+    return res.data;
   } catch (error) {
     console.log(error);
   }
