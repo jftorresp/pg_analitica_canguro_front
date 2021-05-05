@@ -189,3 +189,102 @@ export const getParallelCoordinatesVars = async () => {
     console.log(error);
   }
 };
+
+export const RCIUAbsFrequencyYears = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUaf`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIURelativeFrequencyYears = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUrf`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqAC = async (inicio, fin, variable) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqAC", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        var: variable,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqMA = async (inicio, fin) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqMA", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqMM = async (inicio, fin) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqMM", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAFPromMedidaMadre = async (inicio, fin, variable) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUAFPromMedidaMadre", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        var: variable,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAFMedidaMadre = async (inicio, fin, variable, rciu) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUAFMedidaMadre", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        var: variable,
+        rciu: rciu,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

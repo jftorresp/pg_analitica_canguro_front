@@ -12,11 +12,11 @@ const Home = () => {
       <Router>
         <Navbar />
         <Switch>
-          <Route path="/rciu">
-            <AnalysisRCIU />
-          </Route>
-          <Route path="/crecimiento">
+          <Route path="/entorno">
             <AnalysisGrowth />
+          </Route>
+          <Route path="/nacimiento">
+            <AnalysisRCIU />
           </Route>
           <Route path="/">
             <AnalysisExplore />
