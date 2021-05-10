@@ -44,7 +44,7 @@ export const getVars = async (etapaSelected, temaSelected) => {
   try {
     const res = await axios.get("/api/medidas/vars", {
       params: {
-        e: etapaSelected.value,
+        e: etapaSelected,
         neuro: temaSelected.some((tema) => tema.value === "NEURO")
           ? "true"
           : "false",
@@ -190,6 +190,8 @@ export const getParallelCoordinatesVars = async () => {
   }
 };
 
+// ENTORNO //
+
 export const RCIUAbsFrequencyYears = async () => {
   try {
     const res = await axios.get(`/api/medidas/RCIUaf`);
@@ -210,6 +212,46 @@ export const RCIURelativeFrequencyYears = async () => {
   }
 };
 
+export const RCIURelativeFrequencyPremature = async (
+  inicio,
+  fin,
+  variables,
+  isPrem
+) => {
+  try {
+    const res = await axios.post("/api/medidas/RCIUInitrfprem", {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
+      prem: isPrem,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAbsoluteFrequencyPremature = async (
+  inicio,
+  fin,
+  variable,
+  isPrem
+) => {
+  try {
+    const res = await axios.post("/api/medidas/RCIUInitafprem", {
+      inicio: inicio,
+      fin: fin,
+      var: variable,
+      prem: isPrem,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const RCIUFreqAC = async (inicio, fin, variable) => {
   try {
     const res = await axios.get("/api/medidas/RCIUFreqAC", {
@@ -217,36 +259,6 @@ export const RCIUFreqAC = async (inicio, fin, variable) => {
         inicio: inicio,
         fin: fin,
         var: variable,
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const RCIUFreqMA = async (inicio, fin) => {
-  try {
-    const res = await axios.get("/api/medidas/RCIUFreqMA", {
-      params: {
-        inicio: inicio,
-        fin: fin,
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const RCIUFreqMM = async (inicio, fin) => {
-  try {
-    const res = await axios.get("/api/medidas/RCIUFreqMM", {
-      params: {
-        inicio: inicio,
-        fin: fin,
       },
     });
 
@@ -272,16 +284,181 @@ export const RCIUAFPromMedidaMadre = async (inicio, fin, variable) => {
   }
 };
 
-export const RCIUAFMedidaMadre = async (inicio, fin, variable, rciu) => {
+export const RCIURFEstudiosMadre = async (inicio, fin, isPrem) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIURFEstudiosMadre", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIURFIngresosMadre = async (inicio, fin, isPrem) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIURFIngresosMadre", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAFMedidaMadre = async (inicio, fin, variable, isPrem) => {
   try {
     const res = await axios.get("/api/medidas/RCIUAFMedidaMadre", {
       params: {
         inicio: inicio,
         fin: fin,
         var: variable,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAntEntornoVars = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUAntEntornoVars`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// NACIMIENTO //
+
+export const RCIUFreqCesarea = async (inicio, fin, isPrem) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqCesarea", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqGender = async (inicio, fin, isPrem, rciu) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqGender", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
         rciu: rciu,
       },
     });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqEdadGes = async (inicio, fin) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqEdadGes", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqEGPremTerm = async (inicio, fin) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUFreqEGPremTerm", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAFPromMedidaBebeNacer = async (
+  inicio,
+  fin,
+  isPrem,
+  variable
+) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIUAFPromMedidaBebeNacer", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+        var: variable,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIURCEUFreq = async (inicio, fin, isPrem) => {
+  try {
+    const res = await axios.get("/api/medidas/RCIURCEUFreq", {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUAntNacimientoVars = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUAntNacimientoVars`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GenderBaseData = async () => {
+  try {
+    const res = await axios.get(`/api/medidas/GenderBaseData`);
 
     return res.data;
   } catch (error) {

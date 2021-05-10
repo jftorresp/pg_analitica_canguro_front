@@ -2,8 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 import AnalysisExplore from "./AnalysisExplore";
+import AnalysisEnv from "./AnalysisEnv";
 import AnalysisGrowth from "./AnalysisGrowth";
-import AnalysisRCIU from "./AnalysisRCIU";
+import AnalysisBirth from "./AnalysisBirth";
 
 const Home = () => {
   // Render
@@ -13,10 +14,13 @@ const Home = () => {
         <Navbar />
         <Switch>
           <Route path="/entorno">
-            <AnalysisGrowth />
+            <AnalysisEnv />
           </Route>
           <Route path="/nacimiento">
-            <AnalysisRCIU />
+            <AnalysisBirth />
+          </Route>
+          <Route path="/crecimiento">
+            <AnalysisGrowth />
           </Route>
           <Route path="/">
             <AnalysisExplore />

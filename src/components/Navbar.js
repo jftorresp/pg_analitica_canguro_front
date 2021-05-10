@@ -43,6 +43,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/crecimiento" className="nav-link link">
+                  Crecimiento
+                </Link>
+              </li>
+              <li className="nav-item">
                 <a
                   href="https://twitter.com/fundcanguro?lang=es"
                   target="_blank"
