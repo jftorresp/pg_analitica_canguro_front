@@ -1,35 +1,59 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import {
   getParallelCoordinates,
   getYears,
   getDictByVar,
+  RCIUFreqDiasH,
+  RCIUFreqUCI,
+  RCIUFreqEGEntrada,
+  parallelPMC,
+  RCIUPromPesoPMC,
+  RCIUOxiEntrada,
 } from "../actions/medidasAction";
 import { getStages } from "../actions/etapasAction";
 import ParallelCoord from "./ParallelCoord";
-import Creatable from "react-select/creatable";
-import Select, { components } from "react-select";
+// import Select, { components } from "react-select";
 import GenderBase from "./GenderBase";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import Handle from "./Handle";
 import TooltipRail from "./TooltipRail";
 import { Track } from "./Track";
 import { Tick } from "./Tick";
+import GroupedBar from "./GroupedBar";
+import CanvasJSReact from "../assets/canvasjs.react";
 
 const AnalysisGrowth = () => {
+  //* States for data vis
   const [dataTipo1, setDataTipo1] = useState([]);
   const [dataTipo2, setDataTipo2] = useState([]);
   const [anios, setAnios] = useState([]);
-  const [anioInicial2, setAnioInicial2] = useState(0);
   const [etapas, setEtapas] = useState([]);
   const [etapaSelected, setEtapaSelected] = useState("");
   const [typesRCIU, setTypesRCIU] = useState([]);
   const [typesRCIUSelected, setTypesRCIUSelected] = useState([]);
+  const [dataRCIUdiasH, setDataRCIUdiasH] = useState({});
+  const [dataRCIUFreqUCIPrem, setDataRCIUFreqUCIPrem] = useState({});
+  const [dataRCIUFreqUCITerm, setDataRCIUFreqUCITerm] = useState({});
+  const [dataRCIUFreqEGEntrada, setDataRCIUFreqEGEntrada] = useState({});
 
-  // States for years
+  const [dataRCIUFreqEGSalida, setDataRCIUFreqEGSalida] = useState({});
+
+  const [dataParallelPMC1, setDataParallelPMC1] = useState([]);
+  const [dataParallelPMC2, setDataParallelPMC2] = useState([]);
+  const [dataParallelPMC3, setDataParallelPMC3] = useState([]);
+
+  const [dataRCIUPromPeso1, setDataRCIUPromPeso1] = useState([]);
+  const [dataRCIUPromPeso2, setDataRCIUPromPeso2] = useState([]);
+  const [dataRCIUPromPeso3, setDataRCIUPromPeso3] = useState([]);
+
+  const [dataRCIUOxiEntrada, setDataRCIUOxiEntrada] = useState({});
+
+  //* States for years
   const [anioInicial, setAnioInicial] = useState(1993);
   const [anioFinal, setAnioFinal] = useState(2020);
 
-  // States for slider
+  //* States for slider
   const defaultValues = [1993, 2020];
   const [domain, setDomain] = useState([1993, 2020]);
   const [values, setValues] = useState(defaultValues.slice());
@@ -40,6 +64,26 @@ const AnalysisGrowth = () => {
     width: "100%",
   };
 
+  const options = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+    maintainAspectRatio: false,
+    responsive: true,
+  };
+
+  var CanvasJS = CanvasJSReact.CanvasJS;
+  var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
+  CanvasJS.addColorSet("customColorSetPrem", ["#0E7FA6", "#FF955B"]);
+  CanvasJS.addColorSet("customColorSetTerm", ["#70D6BC", "#A6330A"]);
+
   // Fetch de los datos de RCIU
   const getDatos = async () => {
     const response = await getParallelCoordinates(
@@ -48,7 +92,7 @@ const AnalysisGrowth = () => {
       etapaSelected.value
     );
     const response2 = await getParallelCoordinates(
-      anioInicial2.value,
+      anioInicial,
       typesRCIUSelected[1].value,
       etapaSelected.value
     );
@@ -81,13 +125,153 @@ const AnalysisGrowth = () => {
     setTypesRCIU(tiposSelect);
   };
 
+  const getRCIUFreqDiasH = async () => {
+    const response = await RCIUFreqDiasH(anioInicial, anioFinal);
+    setDataRCIUdiasH(response);
+  };
+
+  const getRCIUFreqUCI = async () => {
+    const responsePrem = await RCIUFreqUCI(anioInicial, anioFinal, "true");
+    setDataRCIUFreqUCIPrem(responsePrem);
+    const responseTerm = await RCIUFreqUCI(anioInicial, anioFinal, "false");
+    setDataRCIUFreqUCITerm(responseTerm);
+
+    const yearsInterval = [];
+
+    for (let index = update[0]; index < update[1] + 1; index++) {
+      yearsInterval.push(index.toString());
+    }
+    responsePrem.axisX.labelFormatter = function (e) {
+      for (let i = 0; i < yearsInterval.length; i++) {
+        if (e.value === i) {
+          return yearsInterval[i];
+        }
+      }
+      return "";
+    };
+  };
+
+  const getRCIUFreqEGEntrada = async () => {
+    const response = await RCIUFreqEGEntrada(
+      anioInicial,
+      anioFinal,
+      "true",
+      "true"
+    );
+
+    const yearsInterval = [];
+
+    for (let index = update[0]; index < update[1] + 1; index++) {
+      yearsInterval.push(index.toString());
+    }
+    response.axisX.labelFormatter = function (e) {
+      for (let i = 0; i < yearsInterval.length; i++) {
+        if (e.value === i) {
+          return yearsInterval[i];
+        }
+      }
+      return "";
+    };
+    response.toolTip.contentFormatter = function (e) {
+      for (let i = 0; i < yearsInterval.length; i++) {
+        if (e.entries[0].dataPoint.x === i) {
+          return (
+            yearsInterval[i] +
+            ": " +
+            e.entries[0].dataPoint.y.toFixed(2) +
+            " semanas"
+          );
+        }
+      }
+    };
+
+    setDataRCIUFreqEGEntrada(response);
+  };
+
+  const getRCIUFreqEGSalida = async () => {
+    const response = await RCIUFreqEGEntrada(
+      anioInicial,
+      anioFinal,
+      "true",
+      "false"
+    );
+
+    const yearsInterval = [];
+
+    for (let index = update[0]; index < update[1] + 1; index++) {
+      yearsInterval.push(index.toString());
+    }
+    response.axisX.labelFormatter = function (e) {
+      for (let i = 0; i < yearsInterval.length; i++) {
+        if (e.value === i) {
+          return yearsInterval[i];
+        }
+      }
+      return "";
+    };
+    response.toolTip.contentFormatter = function (e) {
+      for (let i = 0; i < yearsInterval.length; i++) {
+        if (e.entries[0].dataPoint.x === i) {
+          return (
+            yearsInterval[i] +
+            ": " +
+            e.entries[0].dataPoint.y.toFixed(2) +
+            " semanas"
+          );
+        }
+      }
+    };
+
+    setDataRCIUFreqEGSalida(response);
+  };
+
+  const getparallelPMC = async () => {
+    const response1 = await parallelPMC(anioInicial, anioFinal, "1");
+    setDataParallelPMC1(response1);
+    ReactDOM.render("", document.getElementById("parOne"));
+    const div = (
+      <ParallelCoord data={response1} title={"Bebés sin RCIU y con RCEU"} />
+    );
+    ReactDOM.render(div, document.getElementById("parOne"));
+
+    const response2 = await parallelPMC(anioInicial, anioFinal, "2");
+    setDataParallelPMC2(response2);
+    ReactDOM.render("", document.getElementById("parTwo"));
+    const div2 = (
+      <ParallelCoord data={response2} title={"Bebés sin RCIU y sin RCEU"} />
+    );
+    ReactDOM.render(div2, document.getElementById("parTwo"));
+
+    const response3 = await parallelPMC(anioInicial, anioFinal, "3");
+    setDataParallelPMC3(response3);
+    ReactDOM.render("", document.getElementById("parThree"));
+    const div3 = <ParallelCoord data={response3} title={"Bebés con RCIU"} />;
+    ReactDOM.render(div3, document.getElementById("parThree"));
+  };
+
+  const getRCIUPromPesoPMC = async () => {
+    const response1 = await RCIUPromPesoPMC(anioInicial, anioFinal, "1");
+    setDataRCIUPromPeso1(response1);
+
+    const response2 = await RCIUPromPesoPMC(anioInicial, anioFinal, "2");
+    setDataRCIUPromPeso2(response2);
+
+    const response3 = await RCIUPromPesoPMC(anioInicial, anioFinal, "3");
+    setDataRCIUPromPeso3(response3);
+  };
+
+  const getRCIUOxiEntrada = async () => {
+    const response = await RCIUOxiEntrada(anioInicial, anioFinal);
+    setDataRCIUOxiEntrada(response);
+  };
+
   // Handlers para los Selects
   const onChangeEtapa = (selectedOption) => {
     setEtapaSelected(selectedOption);
   };
 
   const onChangeYear = (selectedOption) => {
-    setAnioInicial2(selectedOption);
+    setAnioInicial(selectedOption);
   };
 
   const onChangeTypesRCIU = (selectedOption) => {
@@ -95,7 +279,6 @@ const AnalysisGrowth = () => {
   };
 
   const cleanFields = () => {
-    setAnioInicial2(0);
     setEtapaSelected("");
     setTypesRCIUSelected([]);
     setDataTipo1([]);
@@ -110,29 +293,27 @@ const AnalysisGrowth = () => {
     setValues(valuesNew);
     setAnioInicial(valuesNew[0]);
     setAnioFinal(valuesNew[1]);
+    getRCIUFreqDiasH();
+    getRCIUFreqUCI();
+    getRCIUFreqEGEntrada();
+    getRCIUFreqEGSalida();
+    getparallelPMC();
+    getRCIUPromPesoPMC();
+    getRCIUOxiEntrada();
   };
 
   useEffect(() => {
     getAnios();
     getEtapas();
     getTypesRCIU();
-  }, [etapaSelected, anioInicial2]);
-
-  const Menu = (props) => {
-    const optionSelectedLength = props.getValue().length || 0;
-    return (
-      <components.Menu {...props}>
-        {optionSelectedLength < 2 ? (
-          props.children
-        ) : (
-          <div style={{ margin: 15 }}>Límite de selección alcanzado</div>
-        )}
-      </components.Menu>
-    );
-  };
-
-  const isValidNewOption = (inputValue, selectValue) =>
-    inputValue.length > 0 && selectValue.length < 2;
+    getRCIUFreqDiasH();
+    getRCIUFreqUCI();
+    getRCIUFreqEGEntrada();
+    getRCIUFreqEGSalida();
+    getparallelPMC();
+    getRCIUPromPesoPMC();
+    getRCIUOxiEntrada();
+  }, []);
 
   return (
     <div className="analysisGrowth">
@@ -154,74 +335,36 @@ const AnalysisGrowth = () => {
           </p>
         </div>
         <div className="row">
-          <div class="col-2">
-            <label for="etapa" class="form-label">
-              Etapa
-            </label>
-            <Select
-              placeholder="Select..."
-              className="basic-single text-start"
-              options={etapas}
-              value={etapaSelected}
-              onChange={onChangeEtapa}
-            />
+          <h3>
+            <b>Antecedentes Neonatales</b>
+          </h3>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Promedio días de hospitalización con y sin RCIU</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            {" "}
+            <GroupedBar data={dataRCIUdiasH} options={options} height={200} />
           </div>
-          <div className="col-3">
-            <label for="tiposRCIU" class="form-label">
-              Tipos de RCIU
-            </label>
-            {/* <Select
-              className="basic-single text-start"
-              isMulti
-              value={typesRCIUSelected}
-              options={typesRCIU}
-            /> */}
-            <Creatable
-              components={{ Menu }}
-              isMulti
-              isValidNewOption={isValidNewOption}
-              options={typesRCIU}
-              value={typesRCIUSelected}
-              onChange={onChangeTypesRCIU}
-            />
+        </div>
+        <div className="row">
+          <h5>
+            <b>Unidad de cuidados intensivos (UCI)</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-6">
+            <CanvasJSChart options={dataRCIUFreqUCIPrem} />
           </div>
-          <div class="col-2">
-            <label for="anioInicial" class="form-label">
-              Año inicial
-            </label>
-            <Select
-              placeholder="Select..."
-              className="basic-single text-start"
-              options={anios}
-              value={anioInicial2}
-              onChange={onChangeYear}
-            />
-          </div>
-          <div className="col-1 align-self-end">
-            <button className="query-btn" onClick={getDatos}>
-              Consultar
-            </button>
-          </div>
-          <div className="col-1 align-self-end">
-            <button className="clean-btn" onClick={cleanFields}>
-              Limpiar{" "}
-            </button>
-          </div>
-          <div className="col-3 align-self-end">
-            <h6>
-              {anioInicial2 === 0
-                ? " "
-                : 2016 - anioInicial2.value < 5
-                ? `Año: ${anioInicial2.value}`
-                : `Años: ${anioInicial2.value} - ${
-                    parseInt(anioInicial2.value) + 5
-                  }`}
-            </h6>
+          <div className="col-6">
+            <CanvasJSChart options={dataRCIUFreqUCITerm} />
           </div>
         </div>
         <div className="row pt-4">
           <div className="col-6">
-            {" "}
             <ParallelCoord
               data={dataTipo1.length > 0 ? dataTipo1 : []}
               tipo={
@@ -238,6 +381,93 @@ const AnalysisGrowth = () => {
               }
             />
           </div>
+        </div>
+        <div className="row">
+          <h3>
+            <b>Antecedentes ingreso al Programa Madre Canguro (PMC)</b>
+          </h3>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Promedio edad gestacional entrada al programa</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-12 datAbs2">
+            <CanvasJSChart options={dataRCIUFreqEGEntrada} />
+          </div>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Promedio edad gestacional salida al programa</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-12 datAbs2">
+            <CanvasJSChart options={dataRCIUFreqEGSalida} />
+          </div>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Medidas antropométricas entrada al programa</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-4" id="parOne"></div>
+          <div className="col-4" id="parTwo"></div>
+          <div className="col-4" id="parThree"></div>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Promedio peso entrada y salida del programa</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-4">
+            <h6>
+              <b>sin RCIU y con RCEU</b>
+            </h6>
+            <GroupedBar
+              data={dataRCIUPromPeso1}
+              options={options}
+              height={100}
+            />
+          </div>
+          <div className="col-4">
+            <h6>
+              <b>sin RCIU y sin RCEU</b>
+            </h6>
+            <GroupedBar
+              data={dataRCIUPromPeso2}
+              options={options}
+              height={100}
+            />
+          </div>
+          <div className="col-4">
+            <h6>
+              <b>con RCIU</b>
+            </h6>
+            <GroupedBar
+              data={dataRCIUPromPeso3}
+              options={options}
+              height={100}
+            />
+          </div>
+        </div>
+        <div className="row">
+          <h5>
+            <b>Ingreso al programa canguro con oxígeno</b>
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-12 datAbs">
+            <CanvasJSChart options={dataRCIUOxiEntrada} />
+          </div>
+        </div>
+        <div className="row">
+          <h3>
+            <b>Medidas antropométricas y nutrición</b>
+          </h3>
         </div>
         <div className="slide row pt-3">
           <div className="col-12 slider">

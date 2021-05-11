@@ -5,17 +5,17 @@ const ParallelCoord = (props) => {
   const svgRef = useRef();
   const preRef = useRef();
   const [filtered, setFiltered] = useState([]);
-  var margin = { top: 30, right: 10, bottom: 10, left: -127 };
-  var width = 800 - margin.left - margin.right;
+  var margin = { top: 30, right: 5, bottom: 10, left: -58 };
+  var width = 500 - margin.left - margin.right;
   var height = 550 - margin.top - margin.bottom;
 
   const color = () => {
     const colors = [
-      "rgba(1,40,64,0.4)",
-      "rgba(3,101,140,0.4)",
-      "rgba(3,115,140,0.4)",
-      "rgba(4,173,191,0.4)",
-      "rgba(97,217,41,0.4)",
+      "rgba(14,127,166,0.8)",
+      "rgba(255,149,91,0.8)",
+      // "rgba(3,115,140,0.4)",
+      // "rgba(4,173,191,0.4)",
+      // "rgba(97,217,41,0.4)",
     ];
     const foreground = document.querySelectorAll(".foreground path");
 
@@ -191,16 +191,16 @@ const ParallelCoord = (props) => {
         <div className="col-12">
           {props.data.length > 0 ? (
             <div>
-              <h4>
-                <b>Tipo RCIU:</b> {props.tipo}
-              </h4>
+              <h6>
+                <b>{props.title}</b>
+              </h6>
               <svg
                 ref={svgRef}
                 height={height + margin.top + margin.bottom}
                 width={width + margin.left + margin.right}
                 className="parallel-svg"
               ></svg>
-              <h3 className="pt-3">Datos Seleccionados</h3>
+              <h5 className="pt-3">Datos Seleccionados</h5>
               <div className="tableData">
                 {props.data.length > 0 ? (
                   <pre ref={preRef} className="pt-3"></pre>

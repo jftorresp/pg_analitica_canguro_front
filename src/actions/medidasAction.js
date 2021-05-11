@@ -343,7 +343,7 @@ export const RCIUAntEntornoVars = async () => {
   }
 };
 
-// NACIMIENTO //
+//* NACIMIENTO *//
 
 export const RCIUFreqCesarea = async (inicio, fin, isPrem) => {
   try {
@@ -456,9 +456,108 @@ export const RCIUAntNacimientoVars = async () => {
   }
 };
 
+//! Datos generales
+
 export const GenderBaseData = async () => {
   try {
     const res = await axios.get(`/api/medidas/GenderBaseData`);
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//* CRECIMIENTO *//
+
+export const RCIUFreqDiasH = async (inicio, fin) => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUFreqDiasH`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqUCI = async (inicio, fin, isPrem) => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUFreqUCI`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUFreqEGEntrada = async (inicio, fin, isPrem, isEntrada) => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUFreqEGEntrada`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        prem: isPrem,
+        entrada: isEntrada,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const parallelPMC = async (inicio, fin, number) => {
+  try {
+    const res = await axios.get(`/api/medidas/parallelPMC`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        graph: number,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUPromPesoPMC = async (inicio, fin, number) => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUPromPesoPMC`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+        graph: number,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUOxiEntrada = async (inicio, fin) => {
+  try {
+    const res = await axios.get(`/api/medidas/RCIUOxiEntrada`, {
+      params: {
+        inicio: inicio,
+        fin: fin,
+      },
+    });
 
     return res.data;
   } catch (error) {

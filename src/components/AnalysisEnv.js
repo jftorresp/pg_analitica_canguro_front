@@ -21,44 +21,44 @@ import { Track } from "./Track";
 import { Tick } from "./Tick";
 
 const AnalysisEnv = () => {
-  // States gráficas principales
+  /* States gráficas principales */
   const [dataAbsFreq, setDataAbsFreq] = useState({});
   const [dataRelFreq, setDataRelFreq] = useState({});
-  // Frecuencias muestras bebés prematuros o a término
+  /* Frecuencias muestras bebés prematuros o a término */
   const [dataRelIFreqPrem, setdataRelIFreqPrem] = useState({});
   const [dataAbsolutePrem, setdataAbsolutePrem] = useState([]);
   const [dataRelIFreqTerm, setdataRelIFreqTerm] = useState({});
   const [dataAbsoluteTerm, setdataAbsoluteTerm] = useState([]);
 
-  // Medidas Madre prematuros
+  /* Medidas Madre prematuros */
   const [dataPesoMadrePrem, setDataPesoMadrePrem] = useState({});
   const [dataTallaMadrePrem, setDataTallaMadrePrem] = useState({});
   const [dataEstudiosMadrePrem, setDataEstudiosMadrePrem] = useState({});
   const [dataIngresosMadrePrem, setDataIngresosMadrePrem] = useState({});
-  // const [dataPromPesoMadre, setDataPromPesoMadre] = useState({});
-  // const [promediosPeso, setpromediosPeso] = useState([]);
-  // const [dataPromTallaMadre, setDataPromTallaMadre] = useState({});
-  // const [promediosTalla, setpromediosTalla] = useState([]);
+  //// const [dataPromPesoMadre, setDataPromPesoMadre] = useState({});
+  //// const [promediosPeso, setpromediosPeso] = useState([]);
+  //// const [dataPromTallaMadre, setDataPromTallaMadre] = useState({});
+  //// const [promediosTalla, setpromediosTalla] = useState([]);
 
-  // Medidas Madre a término
+  /* Medidas Madre a término */
   const [dataPesoMadreTerm, setDataPesoMadreTerm] = useState({});
   const [dataTallaMadreTerm, setDataTallaMadreTerm] = useState({});
   const [dataEstudiosMadreTerm, setDataEstudiosMadreTerm] = useState({});
   const [dataIngresosMadreTerm, setDataIngresosMadreTerm] = useState({});
 
-  // Medidas Padre prematuros
+  /* Medidas Padre prematuros */
   const [dataPesoPadrePrem, setDataPesoPadrePrem] = useState({});
   const [dataTallaPadrePrem, setDataTallaPadrePrem] = useState({});
-  // const [dataPromPesoPadre, setDataPromPesoPadre] = useState({});
-  // const [promediosPesoP, setpromediosPesoP] = useState([]);
-  // const [dataPromTallaPadre, setDataPromTallaPadre] = useState({});
-  // const [promediosTallaP, setpromediosTallaP] = useState([]);
+  //// const [dataPromPesoPadre, setDataPromPesoPadre] = useState({});
+  //// const [promediosPesoP, setpromediosPesoP] = useState([]);
+  //// const [dataPromTallaPadre, setDataPromTallaPadre] = useState({});
+  //// const [promediosTallaP, setpromediosTallaP] = useState([]);
 
-  // Medidas Padre a término
+  /* Medidas Padre a término */
   const [dataPesoPadreTerm, setDataPesoPadreTerm] = useState({});
   const [dataTallaPadreTerm, setDataTallaPadreTerm] = useState({});
 
-  // States for years
+  /* States for years */
   const [anioInicial, setAnioInicial] = useState(1993);
   const [anioFinal, setAnioFinal] = useState(2020);
 
@@ -92,9 +92,9 @@ const AnalysisEnv = () => {
   CanvasJS.addColorSet("customColorSet6", ["#A6330A"]);
   CanvasJS.addColorSet("customColorSet7", ["#F28C0F"]);
 
-  // API Calls
+  //* API Calls
 
-  // Gráfica de barras con valores absolutos de RCIU en intervalos de años
+  /* Gráfica de barras con valores absolutos de RCIU en intervalos de años */
   const getRCIUAbsFreqYears = async () => {
     const response = await RCIUAbsFrequencyYears();
     setDataAbsFreq(response);
@@ -122,9 +122,7 @@ const AnalysisEnv = () => {
     setDataRelFreq(response);
   };
 
-  ///////////////////////
-  ///// PREMATUROS /////
-  /////////////////////
+  //* PREMATUROS
 
   // Trae los datos de frecuencias relativas para muestras de bebés prematuros sin variables
   const getRCIURelInitFreqPremature = async () => {
@@ -305,9 +303,7 @@ const AnalysisEnv = () => {
     return response;
   };
 
-  ///////////////////////
-  ///// A TÉRMINO /////
-  /////////////////////
+  //* A TÉRMINO
 
   // Trae los datos de frecuencias relativas para muestras de bebés prematuros sin variables
   const getRCIURelInitFreqTerm = async () => {
@@ -601,6 +597,8 @@ const AnalysisEnv = () => {
     width: "100%",
   };
 
+  //* Handler methods
+
   const onUpdate = (update) => {
     setUpdate(update);
     setAnioInicial(update[0]);
@@ -628,6 +626,8 @@ const AnalysisEnv = () => {
   const onChangeVars = (selectedOption) => {
     setVarsSelected(selectedOption);
   };
+
+  //* Render
 
   return (
     <div className="analysisRCIU">
