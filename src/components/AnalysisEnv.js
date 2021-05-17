@@ -9,7 +9,7 @@ import {
   RCIUAntEntornoVars,
   RCIURFEstudiosMadre,
   RCIURFIngresosMadre,
-} from "../actions/medidasAction";
+} from "../actions/medidasEntornoAction";
 import CanvasJSReact from "../assets/canvasjs.react";
 import Select from "react-select";
 import MedidasGraphs from "./MedidasGrahps";
@@ -20,7 +20,9 @@ import TooltipRail from "./TooltipRail";
 import { Track } from "./Track";
 import { Tick } from "./Tick";
 
-const AnalysisEnv = () => {
+import Filters from "./Filters";
+
+const AnalysisEnv = (props) => {
   /* States gráficas principales */
   const [dataAbsFreq, setDataAbsFreq] = useState({});
   const [dataRelFreq, setDataRelFreq] = useState({});
@@ -65,12 +67,15 @@ const AnalysisEnv = () => {
   // States for variables select
   const [dataGroup, setDataGroup] = useState([]);
   const [varsSelected, setVarsSelected] = useState([]);
+  const [filterVars, setFilterVars] = useState([]);
 
   // States for slider
   const defaultValues = [1993, 2020];
   const [domain, setDomain] = useState([1993, 2020]);
   const [values, setValues] = useState(defaultValues.slice());
   const [update, setUpdate] = useState(defaultValues.slice());
+
+  const [anchorEl, setAnchorEl] = useState();
 
   var CanvasJS = CanvasJSReact.CanvasJS;
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -168,64 +173,6 @@ const AnalysisEnv = () => {
   // Trae los datos de frecuencias relativas para muestras de bebés prematuros con variables
   const getRCIURelFreqPremature = async () => {
     for (let i = 0; i < varsSelected.length; i++) {
-      if (varsSelected[i].value === "pesomama") {
-        const responsePM = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "pesomama",
-          "true"
-        );
-        setDataPesoMadrePrem(responsePM);
-      }
-
-      if (varsSelected[i].value === "tallamama") {
-        const responseTM = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "tallamama",
-          "true"
-        );
-        setDataTallaMadrePrem(responseTM);
-      }
-
-      if (varsSelected[i].value === "pesopapa") {
-        const responsePP = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "pesopapa",
-          "true"
-        );
-        setDataPesoPadrePrem(responsePP);
-      }
-
-      if (varsSelected[i].value === "tallapapa") {
-        const responseTP = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "tallapapa",
-          "true"
-        );
-        setDataTallaPadrePrem(responseTP);
-      }
-
-      if (varsSelected[i].value === "nivelmama") {
-        const responseEM = await RCIURFEstudiosMadre(
-          anioInicial,
-          anioFinal,
-          "true"
-        );
-        setDataEstudiosMadrePrem(responseEM);
-      }
-
-      if (varsSelected[i].value === "percapitasalariominimo") {
-        const responseEM = await RCIURFIngresosMadre(
-          anioInicial,
-          anioFinal,
-          "true"
-        );
-        setDataIngresosMadrePrem(responseEM);
-      }
-
       if (
         varsSelected[i].value !== "pesomama" &&
         varsSelected[i].value !== "tallamama" &&
@@ -349,64 +296,6 @@ const AnalysisEnv = () => {
   // Trae los datos de frecuencias relativas para muestras de bebés prematuros con variables
   const getRCIURelFreqTerm = async () => {
     for (let i = 0; i < varsSelected.length; i++) {
-      if (varsSelected[i].value === "pesomama") {
-        const responsePM = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "pesomama",
-          "false"
-        );
-        setDataPesoMadreTerm(responsePM);
-      }
-
-      if (varsSelected[i].value === "tallamama") {
-        const responseTM = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "tallamama",
-          "false"
-        );
-        setDataTallaMadreTerm(responseTM);
-      }
-
-      if (varsSelected[i].value === "pesopapa") {
-        const responsePP = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "pesopapa",
-          "false"
-        );
-        setDataPesoPadreTerm(responsePP);
-      }
-
-      if (varsSelected[i].value === "tallapapa") {
-        const responseTP = await RCIUAFMedidaMadre(
-          anioInicial,
-          anioFinal,
-          "tallapapa",
-          "false"
-        );
-        setDataTallaPadreTerm(responseTP);
-      }
-
-      if (varsSelected[i].value === "nivelmama") {
-        const responseEM = await RCIURFEstudiosMadre(
-          anioInicial,
-          anioFinal,
-          "false"
-        );
-        setDataEstudiosMadreTerm(responseEM);
-      }
-
-      if (varsSelected[i].value === "percapitasalariominimo") {
-        const responseEM = await RCIURFIngresosMadre(
-          anioInicial,
-          anioFinal,
-          "false"
-        );
-        setDataIngresosMadreTerm(responseEM);
-      }
-
       if (
         varsSelected[i].value !== "pesomama" &&
         varsSelected[i].value !== "tallamama" &&
@@ -487,6 +376,132 @@ const AnalysisEnv = () => {
     setDataGroup(response);
   };
 
+  const getRCIUPesoMama = async (d = "0", h = "0") => {
+    const responsePM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "pesomama",
+      "true",
+      d,
+      h
+    );
+    setDataPesoMadrePrem(responsePM);
+
+    const responseTM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "pesomama",
+      "false",
+      d,
+      h
+    );
+    setDataPesoMadreTerm(responseTM);
+  };
+
+  const getRCIUTallaMama = async (d = "0", h = "0") => {
+    const responsePM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "tallamama",
+      "true",
+      d,
+      h
+    );
+    setDataTallaMadrePrem(responsePM);
+
+    const responseTM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "tallamama",
+      "false",
+      d,
+      h
+    );
+    setDataTallaMadreTerm(responseTM);
+  };
+
+  const getRCIUPesoPapa = async (d = "0", h = "0") => {
+    const responsePM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "pesopapa",
+      "true",
+      d,
+      h
+    );
+    setDataPesoPadrePrem(responsePM);
+
+    const responseTM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "pesopapa",
+      "false",
+      d,
+      h
+    );
+    setDataPesoPadreTerm(responseTM);
+  };
+
+  const getRCIUTallaPapa = async (d = "0", h = "0") => {
+    const responsePM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "tallapapa",
+      "true",
+      d,
+      h
+    );
+    setDataTallaPadrePrem(responsePM);
+
+    const responseTM = await RCIUAFMedidaMadre(
+      anioInicial,
+      anioFinal,
+      "tallapapa",
+      "false",
+      d,
+      h
+    );
+    setDataTallaPadreTerm(responseTM);
+  };
+
+  const getRCIUIngresosMama = async (d = "0", h = "0") => {
+    const responsePM = await RCIURFIngresosMadre(
+      anioInicial,
+      anioFinal,
+      "true",
+      d,
+      h
+    );
+    setDataIngresosMadrePrem(responsePM);
+
+    const responseTM = await RCIURFIngresosMadre(
+      anioInicial,
+      anioFinal,
+      "false",
+      d,
+      h
+    );
+    setDataIngresosMadreTerm(responseTM);
+  };
+
+  const getRCIUEstudiosMama = async (e = "") => {
+    const responseEM = await RCIURFEstudiosMadre(
+      anioInicial,
+      anioFinal,
+      "true",
+      e
+    );
+    setDataEstudiosMadrePrem(responseEM);
+
+    const responseTM = await RCIURFEstudiosMadre(
+      anioInicial,
+      anioFinal,
+      "false",
+      e
+    );
+    setDataEstudiosMadreTerm(responseTM);
+  };
+
   // const getRCIUPromMadre = async () => {
   //   const responsePeso = await RCIUAFPromMedidaMadre(
   //     anioInicial.value,
@@ -554,8 +569,60 @@ const AnalysisEnv = () => {
   const graphData = () => {
     // getRCIUPromMadre();
     // getRCIUPromPadre();
-    getRCIURelFreqPremature();
-    getRCIURelFreqTerm();
+
+    for (let i = 0; i < varsSelected.length; i++) {
+      if (varsSelected[i].value === "toxemia") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "Embarazomultiple") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "primipara") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "adolescentes") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "mayores") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "pesomama") {
+        getRCIUPesoMama();
+      }
+
+      if (varsSelected[i].value === "tallamama") {
+        getRCIUTallaMama();
+      }
+
+      if (varsSelected[i].value === "pesopapa") {
+        getRCIUPesoPapa();
+      }
+
+      if (varsSelected[i].value === "tallapapa") {
+        getRCIUTallaPapa();
+      }
+
+      if (varsSelected[i].value === "nivelmama") {
+        getRCIUEstudiosMama();
+      }
+
+      if (varsSelected[i].value === "percapitasalariominimo") {
+        getRCIUIngresosMama();
+      }
+    }
+
+    setFilterVars(varsSelected);
+    props.filterVariables(varsSelected);
   };
 
   // Vacía los campos de los selects y de los estados relacionados con los datos
@@ -572,24 +639,76 @@ const AnalysisEnv = () => {
 
     setVarsSelected([]);
 
+    for (let i = 0; i < varsSelected.length; i++) {
+      if (varsSelected[i].value === "toxemia") {
+        setdataRelIFreqPrem({});
+        setdataAbsolutePrem([]);
+        setdataRelIFreqTerm({});
+        setdataAbsoluteTerm([]);
+      }
+
+      if (varsSelected[i].value === "Embarazomultiple") {
+        setdataRelIFreqPrem({});
+        setdataAbsolutePrem([]);
+        setdataRelIFreqTerm({});
+        setdataAbsoluteTerm([]);
+      }
+
+      if (varsSelected[i].value === "primipara") {
+        setdataRelIFreqPrem({});
+        setdataAbsolutePrem([]);
+        setdataRelIFreqTerm({});
+        setdataAbsoluteTerm([]);
+      }
+
+      if (varsSelected[i].value === "adolescentes") {
+        setdataRelIFreqPrem({});
+        setdataAbsolutePrem([]);
+        setdataRelIFreqTerm({});
+        setdataAbsoluteTerm([]);
+      }
+
+      if (varsSelected[i].value === "mayores") {
+        setdataRelIFreqPrem({});
+        setdataAbsolutePrem([]);
+        setdataRelIFreqTerm({});
+        setdataAbsoluteTerm([]);
+      }
+
+      if (varsSelected[i].value === "pesomama") {
+        setDataPesoMadrePrem([]);
+        setDataPesoMadreTerm([]);
+      }
+
+      if (varsSelected[i].value === "tallamama") {
+        setDataTallaMadrePrem([]);
+        setDataTallaMadreTerm([]);
+      }
+
+      if (varsSelected[i].value === "pesopapa") {
+        setDataPesoPadrePrem([]);
+        setDataPesoPadreTerm([]);
+      }
+
+      if (varsSelected[i].value === "tallapapa") {
+        setDataTallaPadrePrem([]);
+        setDataTallaPadreTerm([]);
+      }
+
+      if (varsSelected[i].value === "nivelmama") {
+        setDataEstudiosMadrePrem([]);
+      }
+
+      if (varsSelected[i].value === "percapitasalariominimo") {
+        setDataIngresosMadrePrem([]);
+      }
+    }
+
     // Prematuros
-    setdataRelIFreqPrem({});
     getRCIURelInitFreqPremature();
-    getRCIURelFreqPremature();
-    setdataAbsolutePrem([]);
 
     // A término
-    setdataRelIFreqTerm({});
     getRCIURelInitFreqTerm();
-    getRCIURelFreqTerm();
-    setdataAbsoluteTerm([]);
-
-    setDataPesoMadrePrem([]);
-    setDataTallaMadrePrem([]);
-    setDataPesoPadrePrem([]);
-    setDataTallaPadrePrem([]);
-    setDataEstudiosMadrePrem([]);
-    setDataIngresosMadrePrem([]);
   };
 
   const sliderStyle = {
@@ -610,16 +729,55 @@ const AnalysisEnv = () => {
     setAnioInicial(valuesNew[0]);
     setAnioFinal(valuesNew[1]);
 
-    // Prematuros
-    getRCIURelFreqPremature();
-    if (varsSelected.length === 0) {
-      getRCIURelInitFreqPremature();
-    }
+    for (let i = 0; i < varsSelected.length; i++) {
+      if (varsSelected[i].value === "toxemia") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
 
-    // A término
-    getRCIURelFreqTerm();
-    if (varsSelected.length === 0) {
-      getRCIURelInitFreqTerm();
+      if (varsSelected[i].value === "Embarazomultiple") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "primipara") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "adolescentes") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "mayores") {
+        getRCIURelFreqPremature();
+        getRCIURelFreqTerm();
+      }
+
+      if (varsSelected[i].value === "pesomama") {
+        getRCIUPesoMama();
+      }
+
+      if (varsSelected[i].value === "tallamama") {
+        getRCIUTallaMama();
+      }
+
+      if (varsSelected[i].value === "pesopapa") {
+        getRCIUPesoPapa();
+      }
+
+      if (varsSelected[i].value === "tallapapa") {
+        getRCIUTallaPapa();
+      }
+
+      if (varsSelected[i].value === "nivelmama") {
+        getRCIUEstudiosMama();
+      }
+
+      if (varsSelected[i].value === "percapitasalariominimo") {
+        getRCIUIngresosMama();
+      }
     }
   };
 
@@ -627,16 +785,143 @@ const AnalysisEnv = () => {
     setVarsSelected(selectedOption);
   };
 
+  //* Refs for filtering data
+  let pMamaDRef = React.createRef();
+  let pMamaHRef = React.createRef();
+  let tMamaDRef = React.createRef();
+  let tMamaHRef = React.createRef();
+  let pPapaDRef = React.createRef();
+  let tPapaDRef = React.createRef();
+  let pPapaHRef = React.createRef();
+  let tPapaHRef = React.createRef();
+  let ingresosDRef = React.createRef();
+  let ingresosHRef = React.createRef();
+
+  const medidasPMama = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "pesomama") {
+        filterVars[i].desde = pMamaDRef.current.value;
+        filterVars[i].hasta = pMamaHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          pMamaDRef.current.value +
+          "-" +
+          pMamaHRef.current.value;
+
+        getRCIUPesoMama(pMamaDRef.current.value, pMamaHRef.current.value);
+      }
+    }
+  };
+
+  const medidasTMama = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "tallamama") {
+        filterVars[i].desde = tMamaDRef.current.value;
+        filterVars[i].hasta = tMamaHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          tMamaDRef.current.value +
+          "-" +
+          tMamaHRef.current.value;
+
+        getRCIUTallaMama(tMamaDRef.current.value, tMamaHRef.current.value);
+      }
+    }
+  };
+
+  const medidasPPapa = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "pesopapa") {
+        filterVars[i].desde = pPapaDRef.current.value;
+        filterVars[i].hasta = pPapaHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          pPapaDRef.current.value +
+          "-" +
+          pPapaHRef.current.value;
+
+        getRCIUPesoPapa(pPapaDRef.current.value, pPapaHRef.current.value);
+      }
+    }
+  };
+
+  const medidasTPapa = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "tallapapa") {
+        filterVars[i].desde = tPapaDRef.current.value;
+        filterVars[i].hasta = tPapaHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          tPapaDRef.current.value +
+          "-" +
+          tPapaHRef.current.value;
+
+        getRCIUTallaPapa(tPapaDRef.current.value, tPapaHRef.current.value);
+      }
+    }
+  };
+
+  const ingresosMama = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "percapitasalariominimo") {
+        filterVars[i].desde = ingresosDRef.current.value;
+        filterVars[i].hasta = ingresosHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          ingresosDRef.current.value +
+          "-" +
+          ingresosHRef.current.value;
+
+        getRCIUIngresosMama(
+          ingresosDRef.current.value,
+          ingresosHRef.current.value
+        );
+      }
+    }
+  };
+
+  const [estudio, setEstudio] = useState("");
+
+  const estudioSel = (estudio) => {
+    setEstudio(estudio);
+  };
+
+  const estudioFilter = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "nivelmama") {
+        filterVars[i].filter = filterVars[i].label + " (" + estudio + ")";
+
+        getRCIUEstudiosMama(estudio);
+      }
+    }
+  };
+
   //* Render
 
   return (
     <div className="analysisRCIU">
       <div className="container">
-        <GenderBase />
+        <GenderBase
+          inicio={anioInicial}
+          fin={anioFinal}
+          vars={filterVars.length > 0 ? filterVars : []}
+        />
         <div className="row pt-4">
-          <h1>
-            <b>Análisis del Entorno - RCIU</b>
-          </h1>
+          <div className="col-11">
+            <h1>
+              <b>Análisis del Entorno - RCIU</b>
+            </h1>
+          </div>
+          <div className="col-1 text-end">
+            <Filters filters={filterVars} />
+          </div>
+        </div>
+        <div className="row">
           <p>
             En esta sección se encuentran diferentes visualizaciones referentes
             a variables prenatales y del entorno previo al nacimiento del bebé
@@ -741,37 +1026,72 @@ const AnalysisEnv = () => {
               </div>
             </div>
             <div className="row">
-              {varsSelected &&
-                varsSelected.map((variable) =>
+              {filterVars &&
+                filterVars.map((variable) =>
                   variable.value === "pesomama" ? (
                     <MedidasGraphs
                       dataMedida={dataPesoMadrePrem}
                       title={"Distribución peso mamá"}
+                      filter={true}
+                      variablesSel={filterVars}
+                      medidaFilter={medidasPMama}
+                      desdeInput={pMamaDRef}
+                      hastaInput={pMamaHRef}
+                      estudios={false}
                     />
                   ) : variable.value === "tallamama" ? (
                     <MedidasGraphs
                       dataMedida={dataTallaMadrePrem}
+                      filter={true}
+                      variablesSel={filterVars}
                       title={"Distribución talla mamá"}
+                      medidaFilter={medidasTMama}
+                      desdeInput={tMamaDRef}
+                      hastaInput={tMamaHRef}
+                      estudios={false}
                     />
                   ) : variable.value === "pesopapa" ? (
                     <MedidasGraphs
                       dataMedida={dataPesoPadrePrem}
+                      filter={true}
+                      variablesSel={filterVars}
                       title={"Distribución peso papá"}
+                      medidaFilter={medidasPPapa}
+                      desdeInput={pPapaDRef}
+                      hastaInput={pPapaHRef}
+                      estudios={false}
                     />
                   ) : variable.value === "tallapapa" ? (
                     <MedidasGraphs
                       dataMedida={dataTallaPadrePrem}
+                      filter={true}
+                      variablesSel={filterVars}
                       title={"Distribución talla papá"}
+                      medidaFilter={medidasTPapa}
+                      desdeInput={tPapaDRef}
+                      hastaInput={tPapaHRef}
+                      estudios={false}
                     />
                   ) : variable.value === "nivelmama" ? (
                     <MedidasGraphs
                       dataMedida={dataEstudiosMadrePrem}
+                      filter={true}
+                      variablesSel={filterVars}
                       title={"Estudios mamá"}
+                      medidaFilter={estudioFilter}
+                      estudioSel={estudioSel}
+                      estudios={true}
                     />
                   ) : variable.value === "percapitasalariominimo" ? (
                     <MedidasGraphs
                       dataMedida={dataIngresosMadrePrem}
+                      filter={true}
+                      variablesSel={filterVars}
                       title={"Ingresos per cápita"}
+                      medidaFilter={ingresosMama}
+                      estudios={false}
+                      desdeInput={ingresosDRef}
+                      hastaInput={ingresosHRef}
                     />
                   ) : (
                     <p></p>
@@ -795,36 +1115,42 @@ const AnalysisEnv = () => {
             </div>
           </div>
           <div className="row">
-            {varsSelected &&
-              varsSelected.map((variable) =>
+            {filterVars &&
+              filterVars.map((variable) =>
                 variable.value === "pesomama" ? (
                   <MedidasGraphs
                     dataMedida={dataPesoMadreTerm}
+                    filter={false}
                     title={"Distribución peso mamá"}
                   />
                 ) : variable.value === "tallamama" ? (
                   <MedidasGraphs
                     dataMedida={dataTallaMadreTerm}
+                    filter={false}
                     title={"Distribución talla mamá"}
                   />
                 ) : variable.value === "pesopapa" ? (
                   <MedidasGraphs
                     dataMedida={dataPesoPadreTerm}
+                    filter={false}
                     title={"Distribución peso papá"}
                   />
                 ) : variable.value === "tallapapa" ? (
                   <MedidasGraphs
                     dataMedida={dataTallaPadreTerm}
+                    filter={false}
                     title={"Distribución talla papá"}
                   />
                 ) : variable.value === "nivelmama" ? (
                   <MedidasGraphs
                     dataMedida={dataEstudiosMadreTerm}
+                    filter={false}
                     title={"Estudios mamá"}
                   />
                 ) : variable.value === "percapitasalariominimo" ? (
                   <MedidasGraphs
                     dataMedida={dataIngresosMadreTerm}
+                    filter={false}
                     title={"Ingresos per cápita"}
                   />
                 ) : (

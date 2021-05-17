@@ -112,7 +112,6 @@ pre {
   tab-size: 12;
   font-size: 12px;
   overflow: auto;
-  height: 300px;
 }
 
 .tableData {
@@ -130,6 +129,10 @@ pre {
   height: 320px !important;
 }
 
+.datAbs3 > div {
+  height: 130px !important;
+}
+
 .antecedentesEntorno {
   margin-bottom: 70px;
 }
@@ -137,7 +140,7 @@ pre {
 .slider {
   position: fixed;
   bottom: 0;
-  width: 68%;
+  width: 75%;
   padding: 10px 40px 50px 40px;
   background-color: rgba(11, 72, 107, 0.9);
   border-radius: 20px;
@@ -157,7 +160,7 @@ pre {
 }
 
 .genderBase .total {
-  font-size: 12px;
+  font-size: 14px;
   color: #0b486b;
 }
 
@@ -168,4 +171,44 @@ pre {
 
 .slide {
   margin-top: 100px;
+}
+
+.banner {
+  width: 100%;
+}
+
+.titulo {
+  font-size: 60px;
+}
+
+.filters-btn {
+  background-color: transparent;
+  border: none;
+  color: #0b486b;
+  font-size: 25px;
+}
+
+.filters-yes-btn {
+  background-color: transparent;
+  border: none;
+  color: #3bdb43;
+  font-size: 25px;
+}
+
+.list {
+  list-style: none;
+}
+
+.del-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.aply-btn {
+  background-color: #14b1b4;
+  color: #fff;
+}
+
+.aply-btn:hover {
+  background-color: #00cdd1;
 }

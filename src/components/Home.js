@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Navbar from "./Navbar";
-import AnalysisExplore from "./AnalysisExplore";
 import AnalysisEnv from "./AnalysisEnv";
 import AnalysisGrowth from "./AnalysisGrowth";
 import AnalysisBirth from "./AnalysisBirth";
+import Homepage from "./Homepage";
 
 const Home = () => {
+  const [filVars, setFilVars] = useState([]);
+
+  const filterVariables = (inputValue) => {
+    setFilVars(inputValue);
+  };
+
   // Render
   return (
     <div className="home">
@@ -14,16 +20,16 @@ const Home = () => {
         <Navbar />
         <Switch>
           <Route path="/entorno">
-            <AnalysisEnv />
+            <AnalysisEnv filterVariables={filterVariables} />
           </Route>
           <Route path="/nacimiento">
-            <AnalysisBirth />
+            <AnalysisBirth inputVars={filVars} />
           </Route>
           <Route path="/crecimiento">
             <AnalysisGrowth />
           </Route>
           <Route path="/">
-            <AnalysisExplore />
+            <Homepage />
           </Route>
         </Switch>
       </Router>

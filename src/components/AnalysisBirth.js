@@ -12,13 +12,14 @@ import {
   RCIUAFPromMedidaBebeNacer,
   RCIURCEUFreq,
   RCIUAntNacimientoVars,
-} from "../actions/medidasAction";
+} from "../actions/medidasNacimientoAction";
 import CanvasJSReact from "../assets/canvasjs.react";
 import GroupedBar from "./GroupedBar";
 import GenderBase from "./GenderBase";
 import Select from "react-select";
+import Filters from "./Filters";
 
-function AnalysisBirth() {
+function AnalysisBirth(props) {
   // States for slider
   const defaultValues = [1993, 2020];
   const [domain, setDomain] = useState([1993, 2020]);
@@ -57,6 +58,7 @@ function AnalysisBirth() {
   // States for variables select
   const [dataGroup, setDataGroup] = useState([]);
   const [varsSelected, setVarsSelected] = useState([]);
+  const [filterVars, setFilterVars] = useState(props.inputVars);
 
   const sliderStyle = {
     position: "relative",
@@ -84,8 +86,26 @@ function AnalysisBirth() {
   // API Calls
 
   const getRCIUFreqCesarea = async () => {
-    const response = await RCIUFreqCesarea(anioInicial, anioFinal, "true");
-    const response2 = await RCIUFreqCesarea(anioInicial, anioFinal, "false");
+    var response = {};
+    var response2 = {};
+
+    if (filterVars.length > 0) {
+      response = await RCIUFreqCesarea(
+        anioInicial,
+        anioFinal,
+        "true",
+        filterVars
+      );
+      response2 = await RCIUFreqCesarea(
+        anioInicial,
+        anioFinal,
+        "false",
+        filterVars
+      );
+    } else {
+      response = await RCIUFreqCesarea(anioInicial, anioFinal, "true", []);
+      response2 = await RCIUFreqCesarea(anioInicial, anioFinal, "false", []);
+    }
 
     const yearsInterval = [];
 
@@ -144,41 +164,91 @@ function AnalysisBirth() {
   };
 
   const getRCIUFreqGender = async () => {
-    const response = await RCIUFreqGender(
-      anioInicial,
-      anioFinal,
-      "true",
-      "true"
-    );
+    var response = {};
+    var response2 = {};
+    var response3 = {};
+    var response4 = {};
+
+    if (filterVars && filterVars.length > 0) {
+      response = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "true",
+        "true",
+        filterVars
+      );
+
+      response2 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "true",
+        "false",
+        filterVars
+      );
+
+      response3 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "false",
+        "true",
+        filterVars
+      );
+
+      response4 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "false",
+        "false",
+        filterVars
+      );
+    } else {
+      response = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "true",
+        "true",
+        []
+      );
+
+      response2 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "true",
+        "false",
+        []
+      );
+
+      response3 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "false",
+        "true",
+        []
+      );
+
+      response4 = await RCIUFreqGender(
+        anioInicial,
+        anioFinal,
+        "false",
+        "false",
+        []
+      );
+    }
+
     setdataFreqGenderPremWith(response);
-
-    const response2 = await RCIUFreqGender(
-      anioInicial,
-      anioFinal,
-      "true",
-      "false"
-    );
     setdataFreqGenderPremWithout(response2);
-
-    const response3 = await RCIUFreqGender(
-      anioInicial,
-      anioFinal,
-      "false",
-      "true"
-    );
     setdataFreqGenderTermWith(response3);
-
-    const response4 = await RCIUFreqGender(
-      anioInicial,
-      anioFinal,
-      "false",
-      "false"
-    );
     setdataFreqGenderTermWithout(response4);
   };
 
   const getRCIUFreqEdadGes = async () => {
-    const response = await RCIUFreqEdadGes(anioInicial, anioFinal);
+    var response = {};
+
+    if (filterVars && filterVars.length > 0) {
+      response = await RCIUFreqEdadGes(anioInicial, anioFinal, filterVars);
+    } else {
+      response = await RCIUFreqEdadGes(anioInicial, anioFinal, []);
+    }
 
     response.axisX.labelFormatter = function (e) {
       return e.value === 1
@@ -201,70 +271,153 @@ function AnalysisBirth() {
   };
 
   const getRCIUFreqEGPremTerm = async () => {
-    const response = await RCIUFreqEGPremTerm(anioInicial, anioFinal);
+    var response = [];
+
+    if (filterVars.length > 0) {
+      response = await RCIUFreqEGPremTerm(anioInicial, anioFinal, filterVars);
+    } else {
+      response = await RCIUFreqEGPremTerm(anioInicial, anioFinal, []);
+    }
     setdataFreqEGPremTerm(response);
   };
 
   const getRCIUAFPromPesoBebeNacer = async () => {
-    const pesoAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "true",
-      "pesoalnacer"
-    );
+    var pesoAlNacerPrem = {};
+    var pesoAlNacerTerm = {};
 
-    const pesoAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "false",
-      "pesoalnacer"
-    );
+    if (filterVars.length > 0) {
+      pesoAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "pesoalnacer",
+        filterVars
+      );
+
+      pesoAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "pesoalnacer",
+        filterVars
+      );
+    } else {
+      pesoAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "pesoalnacer",
+        []
+      );
+
+      pesoAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "pesoalnacer",
+        []
+      );
+    }
 
     setPesoNacerPrem(pesoAlNacerPrem);
     setPesoNacerTerm(pesoAlNacerTerm);
   };
 
   const getRCIUAFPromTallaBebeNacer = async () => {
-    const tallaAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "true",
-      "tallaalnacer"
-    );
+    var tallaAlNacerPrem = {};
+    var tallaAlNacerTerm = {};
 
-    const tallaAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "false",
-      "tallaalnacer"
-    );
+    if (filterVars.length > 0) {
+      tallaAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "tallaalnacer",
+        filterVars
+      );
+
+      tallaAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "tallaalnacer",
+        filterVars
+      );
+    } else {
+      tallaAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "tallaalnacer",
+        []
+      );
+
+      tallaAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "tallaalnacer",
+        []
+      );
+    }
 
     setTallaNacerPrem(tallaAlNacerPrem);
     setTallaNacerTerm(tallaAlNacerTerm);
   };
 
   const getRCIUAFPromPCBebeNacer = async () => {
-    const pcAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "true",
-      "pcalnacer"
-    );
+    var pcAlNacerPrem = {};
+    var pcAlNacerTerm = {};
 
-    const pcAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
-      anioInicial,
-      anioFinal,
-      "false",
-      "pcalnacer"
-    );
+    if (filterVars.length > 0) {
+      pcAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "pcalnacer",
+        filterVars
+      );
+
+      pcAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "pcalnacer",
+        filterVars
+      );
+    } else {
+      pcAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "true",
+        "pcalnacer",
+        []
+      );
+
+      pcAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
+        anioInicial,
+        anioFinal,
+        "false",
+        "pcalnacer",
+        []
+      );
+    }
 
     setPcNacerPrem(pcAlNacerPrem);
     setPcNacerTerm(pcAlNacerTerm);
   };
 
   const getRCIURCEUFreq = async () => {
-    const prem = await RCIURCEUFreq(anioInicial, anioFinal, "true");
-    const term = await RCIURCEUFreq(anioInicial, anioFinal, "false");
+    var prem = {};
+    var term = {};
+
+    if (filterVars.length > 0) {
+      prem = await RCIURCEUFreq(anioInicial, anioFinal, "true", filterVars);
+      term = await RCIURCEUFreq(anioInicial, anioFinal, "false", filterVars);
+    } else {
+      prem = await RCIURCEUFreq(anioInicial, anioFinal, "true", []);
+      term = await RCIURCEUFreq(anioInicial, anioFinal, "false", []);
+    }
 
     setRciuRceuPrem(prem);
     setRciuRceuTerm(term);
@@ -322,7 +475,10 @@ function AnalysisBirth() {
   };
 
   const graphData = () => {
+    var filArray = [];
     for (let i = 0; i < varsSelected.length; i++) {
+      filArray.push(varsSelected[i]);
+
       if (varsSelected[i].value === "cesarea") {
         getRCIUFreqCesarea();
       }
@@ -352,6 +508,10 @@ function AnalysisBirth() {
         getRCIURCEUFreq();
       }
     }
+
+    const finalArray = [...new Set(filterVars.concat(filArray))];
+
+    setFilterVars(finalArray);
   };
   const cleanFields = () => {
     setVarsSelected([]);
@@ -402,11 +562,22 @@ function AnalysisBirth() {
   return (
     <div className="analysisBirth">
       <div className="container">
-        <GenderBase />
+        <GenderBase
+          inicio={anioInicial}
+          fin={anioFinal}
+          vars={filterVars.length > 0 ? filterVars : []}
+        />
         <div className="row pt-4">
-          <h1>
-            <b>Análisis Nacimiento - RCIU</b>
-          </h1>
+          <div className="col-11">
+            <h1>
+              <b>Análisis Nacimiento - RCIU</b>
+            </h1>
+          </div>
+          <div className="col-1 text-end">
+            <Filters filters={filterVars} />
+          </div>
+        </div>
+        <div className="row">
           <p>
             En esta sección se podrá hacer un análisis de diferentes{" "}
             <b>variables perinatales</b> a lo largo del tiempo, para distintas{" "}
@@ -474,6 +645,7 @@ function AnalysisBirth() {
         ) : (
           <p></p>
         )}
+
         {Object.entries(dataFreqGenderPremWith).length !== 0 &&
         Object.entries(dataFreqGenderPremWithout).length &&
         Object.entries(dataFreqGenderTermWith).length &&

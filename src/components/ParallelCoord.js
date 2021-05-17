@@ -6,7 +6,7 @@ const ParallelCoord = (props) => {
   const preRef = useRef();
   const [filtered, setFiltered] = useState([]);
   var margin = { top: 30, right: 5, bottom: 10, left: -58 };
-  var width = 500 - margin.left - margin.right;
+  var width = props.width - margin.left - margin.right;
   var height = 550 - margin.top - margin.bottom;
 
   const color = () => {
@@ -192,7 +192,7 @@ const ParallelCoord = (props) => {
           {props.data.length > 0 ? (
             <div>
               <h6>
-                <b>{props.title}</b>
+                <i>{props.title}</i>
               </h6>
               <svg
                 ref={svgRef}

@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { GenderBaseData } from "../actions/medidasAction";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faVenus,
+  faMars,
+  faVenusMars,
+} from "@fortawesome/free-solid-svg-icons";
 
-function GenderBase() {
+function GenderBase(props) {
   const [genderBaseData, setGenderBaseData] = useState({});
 
   const getGenderBaseData = async () => {
-    const response = await GenderBaseData();
+    const response = await GenderBaseData(props.inicio, props.fin, props.vars);
     setGenderBaseData(response);
   };
 
   useEffect(() => {
     getGenderBaseData();
-  }, []);
+  }, [props.inicio, props.fin, props.vars]);
 
   return (
     <div className="row mt-4 genderBase">
       <div className="col-2">
-        <b className="total">Total Niños</b>
+        <b className="total">
+          Total Niños <FontAwesomeIcon icon={faMars} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perNinos}% </b>
@@ -31,7 +39,9 @@ function GenderBase() {
         </div>
       </div>
       <div className="col-2">
-        <b className="total">Total Niñas</b>
+        <b className="total">
+          Total Niñas <FontAwesomeIcon icon={faVenus} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perNinas}% </b>
@@ -46,7 +56,9 @@ function GenderBase() {
         </div>
       </div>
       <div className="col-2">
-        <b className="total">Total Niños y Niñas prematuros</b>
+        <b className="total">
+          Total prematuros <FontAwesomeIcon icon={faVenusMars} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perPrematuros}% </b>
@@ -61,7 +73,9 @@ function GenderBase() {
         </div>
       </div>
       <div className="col-2">
-        <b className="total">Total Niños y Niñas a término</b>
+        <b className="total">
+          Total a término <FontAwesomeIcon icon={faVenusMars} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perTermino}% </b>
@@ -75,8 +89,10 @@ function GenderBase() {
           </div>
         </div>
       </div>
-      <div className="col-2">
-        <b className="total">Total Niños y Niñas con RCIU</b>
+      <div className="col-2 p-0">
+        <b className="total">
+          Total con RCIU <FontAwesomeIcon icon={faVenusMars} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perRCIU}% </b>
@@ -91,7 +107,9 @@ function GenderBase() {
         </div>
       </div>
       <div className="col-2">
-        <b className="total">Total Niños y Niñas sin RCIU</b>
+        <b className="total">
+          Total sin RCIU <FontAwesomeIcon icon={faVenusMars} />
+        </b>
         <div className="row">
           <div className="col-5">
             <b className="porcentaje">{genderBaseData.perSinRCIU}% </b>
