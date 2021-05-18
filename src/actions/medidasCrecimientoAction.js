@@ -162,7 +162,8 @@ export const parallelCoordsLecheMaterna = async (
   fin,
   time,
   rciu,
-  variables
+  variables,
+  leche
 ) => {
   try {
     const res = await axios.post(
@@ -173,6 +174,7 @@ export const parallelCoordsLecheMaterna = async (
         time: time,
         rciu: rciu,
         vars: variables,
+        leche: leche,
       }
     );
 
@@ -307,6 +309,41 @@ export const RCIUaudiometria = async (inicio, fin, variables, graph) => {
       inicio: inicio,
       fin: fin,
       graph: graph,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUPromMedidasGrowth = async (
+  inicio,
+  fin,
+  variables,
+  variable
+) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUPromMedidasGrowth", {
+      inicio: inicio,
+      fin: fin,
+      var: variable,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUMedidaAnio = async (inicio, fin, variables, variable) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUMedidaAnio", {
+      inicio: inicio,
+      fin: fin,
+      var: variable,
       vars: variables,
     });
 

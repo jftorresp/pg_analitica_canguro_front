@@ -22,6 +22,8 @@ import {
   RCIUoftalmologia,
   RCIUoptometria,
   RCIUaudiometria,
+  RCIUPromMedidasGrowth,
+  RCIUMedidaAnio,
 } from "../actions/medidasCrecimientoAction";
 
 //* Components Imports
@@ -108,6 +110,7 @@ const AnalysisGrowth = (props) => {
     dataRCIULecheMaterna12Without,
     setDataRCIULecheMaterna12Without,
   ] = useState({});
+
   // States for parallel coords milk
   const [
     dataParallelCoordsLecheMaterna40With,
@@ -193,6 +196,69 @@ const AnalysisGrowth = (props) => {
   const [domain, setDomain] = useState([1993, 2020]);
   const [values, setValues] = useState(defaultValues.slice());
   const [update, setUpdate] = useState(defaultValues.slice());
+
+  // * States data parallel coords medidas
+
+  const [
+    dataParallelCoordsMedidas40With,
+    setDataParallelCoordsMedidas40With,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas40Without,
+    setDataParallelCoordsMedidas40Without,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas3With,
+    setDataParallelCoordsMedidas3With,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas3Without,
+    setDataParallelCoordsMedidas3Without,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas6With,
+    setDataParallelCoordsMedidas6With,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas6Without,
+    setDataParallelCoordsMedidas6Without,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas9With,
+    setDataParallelCoordsMedidas9With,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas9Without,
+    setDataParallelCoordsMedidas9Without,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas12With,
+    setDataParallelCoordsMedidas12With,
+  ] = useState([]);
+  const [
+    dataParallelCoordsMedidas12Without,
+    setDataParallelCoordsMedidas12Without,
+  ] = useState([]);
+
+  const [dataPromPeso40, setDataPromPeso40] = useState({});
+  const [dataPromPeso3, setDataPromPeso3] = useState({});
+  const [dataPromPeso6, setDataPromPeso6] = useState({});
+  const [dataPromPeso9, setDataPromPeso9] = useState({});
+  const [dataPromPeso12, setDataPromPeso12] = useState({});
+  const [dataPromTalla40, setDataPromTalla40] = useState({});
+  const [dataPromTalla3, setDataPromTalla3] = useState({});
+  const [dataPromTalla6, setDataPromTalla6] = useState({});
+  const [dataPromTalla9, setDataPromTalla9] = useState({});
+  const [dataPromTalla12, setDataPromTalla12] = useState({});
+  const [dataPromPc40, setDataPromPc40] = useState({});
+  const [dataPromPc3, setDataPromPc3] = useState({});
+  const [dataPromPc6, setDataPromPc6] = useState({});
+  const [dataPromPc9, setDataPromPc9] = useState({});
+  const [dataPromPc12, setDataPromPc12] = useState({});
+
+  const [dataPesoAnio, setDataPesoAnio] = useState({});
+  const [dataTallaAnio, setDataTallaAnio] = useState({});
+  const [dataPcAnio, setDataPcAnio] = useState({});
 
   const sliderStyle = {
     position: "relative",
@@ -592,7 +658,8 @@ const AnalysisGrowth = (props) => {
       anioFinal,
       time,
       "1",
-      variables
+      variables,
+      "true"
     );
 
     const responseWithout = await parallelCoordsLecheMaterna(
@@ -600,7 +667,8 @@ const AnalysisGrowth = (props) => {
       anioFinal,
       time,
       "0",
-      variables
+      variables,
+      "true"
     );
 
     if (time === "40") {
@@ -976,6 +1044,173 @@ const AnalysisGrowth = (props) => {
     setDataAud3(response3);
   };
 
+  const getparallelCoordsMedidas = async (time) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const responseWith = await parallelCoordsLecheMaterna(
+      anioInicial,
+      anioFinal,
+      time,
+      "1",
+      variables,
+      "false"
+    );
+
+    const responseWithout = await parallelCoordsLecheMaterna(
+      anioInicial,
+      anioFinal,
+      time,
+      "0",
+      variables,
+      "false"
+    );
+
+    if (time === "40") {
+      setDataParallelCoordsMedidas40With(responseWith);
+    } else if (time === "3") {
+      setDataParallelCoordsMedidas3With(responseWith);
+    } else if (time === "6") {
+      setDataParallelCoordsMedidas6With(responseWith);
+    } else if (time === "9") {
+      setDataParallelCoordsMedidas9With(responseWith);
+    } else if (time === "12") {
+      setDataParallelCoordsMedidas12With(responseWith);
+    }
+    ReactDOM.render(<p></p>, document.getElementById(`par${time}WithM`));
+    const div = (
+      <ParallelCoord data={responseWith} title={"Con RCIU"} width={680} />
+    );
+    ReactDOM.render(div, document.getElementById(`par${time}WithM`));
+
+    if (time === "40") {
+      setDataParallelCoordsMedidas40Without(responseWithout);
+    } else if (time === "3") {
+      setDataParallelCoordsMedidas3Without(responseWithout);
+    } else if (time === "6") {
+      setDataParallelCoordsMedidas6Without(responseWithout);
+    } else if (time === "9") {
+      setDataParallelCoordsMedidas9Without(responseWithout);
+    } else if (time === "12") {
+      setDataParallelCoordsMedidas12Without(responseWithout);
+    }
+    ReactDOM.render(<p></p>, document.getElementById(`par${time}WithoutM`));
+    const div2 = (
+      <ParallelCoord data={responseWithout} title={"Sin RCIU"} width={680} />
+    );
+    ReactDOM.render(div2, document.getElementById(`par${time}WithoutM`));
+  };
+
+  const getRCIUPromMedidasGrowthPeso = async (variable) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUPromMedidasGrowth(
+      anioInicial,
+      anioFinal,
+      variables,
+      variable
+    );
+
+    if (variable === "peso.sem40") {
+      setDataPromPeso40(response);
+    } else if (variable === "peso.mes3") {
+      setDataPromPeso3(response);
+    } else if (variable === "peso.mes6") {
+      setDataPromPeso6(response);
+    } else if (variable === "peso.mes9") {
+      setDataPromPeso9(response);
+    } else if (variable === "peso.mes12") {
+      setDataPromPeso12(response);
+    }
+  };
+
+  const getRCIUPromMedidasGrowthTalla = async (variable) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUPromMedidasGrowth(
+      anioInicial,
+      anioFinal,
+      variables,
+      variable
+    );
+
+    if (variable === "talla.sem40") {
+      setDataPromTalla40(response);
+    } else if (variable === "talla.mes3") {
+      setDataPromTalla3(response);
+    } else if (variable === "talla.mes6") {
+      setDataPromTalla6(response);
+    } else if (variable === "talla.mes9") {
+      setDataPromTalla9(response);
+    } else if (variable === "talla.mes12") {
+      setDataPromTalla12(response);
+    }
+  };
+
+  const getRCIUPromMedidasGrowthPc = async (variable) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUPromMedidasGrowth(
+      anioInicial,
+      anioFinal,
+      variables,
+      variable
+    );
+
+    if (variable === "pc.sem40") {
+      setDataPromPc40(response);
+    } else if (variable === "pc.mes3") {
+      setDataPromPc3(response);
+    } else if (variable === "pc.mes6") {
+      setDataPromPc6(response);
+    } else if (variable === "pc.mes9") {
+      setDataPromPc9(response);
+    } else if (variable === "pc.mes12") {
+      setDataPromPc12(response);
+    }
+  };
+
+  const getRCIUMedidaAnio = async (variable) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUMedidaAnio(
+      anioInicial,
+      anioFinal,
+      variables,
+      variable
+    );
+
+    if (variable === "peso") {
+      formatAxisTooltip2(response, " (gr)");
+      setDataPesoAnio(response);
+    } else if (variable === "talla") {
+      formatAxisTooltip2(response, " (cm)");
+      setDataTallaAnio(response);
+    } else if (variable === "pc") {
+      formatAxisTooltip2(response, " (cm)");
+      setDataPcAnio(response);
+    }
+  };
+
   // * Helper functions
   const formatAxisTooltip = (response) => {
     const yearsInterval = [];
@@ -995,6 +1230,40 @@ const AnalysisGrowth = (props) => {
       for (let i = 0; i < yearsInterval.length; i++) {
         if (e.entries[0].dataPoint.x === i) {
           return yearsInterval[i] + ": " + e.entries[0].dataPoint.y + "%";
+        }
+      }
+    };
+  };
+
+  const formatAxisTooltip2 = (response, medida) => {
+    response.axisX.labelFormatter = function (e) {
+      for (let i = 0; i < 5; i++) {
+        if (e.value === 0) {
+          return "semana 40";
+        } else if (e.value === 1) {
+          return "mes 3";
+        } else if (e.value === 2) {
+          return "mes 6";
+        } else if (e.value === 3) {
+          return "mes 9";
+        } else if (e.value === 4) {
+          return "mes 12";
+        }
+      }
+      return "";
+    };
+    response.toolTip.contentFormatter = function (e) {
+      for (let i = 0; i < 5; i++) {
+        if (e.entries[0].dataPoint.x === 0) {
+          return "semana 40: " + e.entries[0].dataPoint.y + medida;
+        } else if (e.entries[0].dataPoint.x === 1) {
+          return "mes 3: " + e.entries[0].dataPoint.y + medida;
+        } else if (e.entries[0].dataPoint.x === 2) {
+          return "mes 6: " + e.entries[0].dataPoint.y + medida;
+        } else if (e.entries[0].dataPoint.x === 3) {
+          return "mes 9: " + e.entries[0].dataPoint.y + medida;
+        } else if (e.entries[0].dataPoint.x === 4) {
+          return "mes 12: " + e.entries[0].dataPoint.y + medida;
         }
       }
     };
@@ -1179,6 +1448,113 @@ const AnalysisGrowth = (props) => {
         setDataAud2({});
         setDataAud3({});
       }
+
+      if (varsSelected[i].value === "medidas40") {
+        setDataParallelCoordsMedidas40With([]);
+        ReactDOM.render(<p></p>, document.getElementById("par40WithM"));
+        setDataParallelCoordsMedidas40Without([]);
+        ReactDOM.render(<p></p>, document.getElementById("par40WithoutM"));
+      }
+
+      if (varsSelected[i].value === "medidas3") {
+        setDataParallelCoordsMedidas3With([]);
+        ReactDOM.render(<p></p>, document.getElementById("par3WithM"));
+        setDataParallelCoordsMedidas3Without([]);
+        ReactDOM.render(<p></p>, document.getElementById("par3WithoutM"));
+      }
+
+      if (varsSelected[i].value === "medidas6") {
+        setDataParallelCoordsMedidas6With([]);
+        ReactDOM.render(<p></p>, document.getElementById("par6WithM"));
+        setDataParallelCoordsMedidas6Without([]);
+        ReactDOM.render(<p></p>, document.getElementById("par6WithoutM"));
+      }
+
+      if (varsSelected[i].value === "medidas9") {
+        setDataParallelCoordsMedidas9With([]);
+        ReactDOM.render(<p></p>, document.getElementById("par9WithM"));
+        setDataParallelCoordsMedidas9Without([]);
+        ReactDOM.render(<p></p>, document.getElementById("par9WithoutM"));
+      }
+
+      if (varsSelected[i].value === "medidas12") {
+        setDataParallelCoordsMedidas12With([]);
+        ReactDOM.render(<p></p>, document.getElementById("par12WithM"));
+        setDataParallelCoordsMedidas12Without([]);
+        ReactDOM.render(<p></p>, document.getElementById("par12WithoutM"));
+      }
+
+      if (varsSelected[i].value === "peso.sem40") {
+        setDataPromPeso40({});
+      }
+
+      if (varsSelected[i].value === "peso.mes3") {
+        setDataPromPeso3({});
+      }
+
+      if (varsSelected[i].value === "peso.mes6") {
+        setDataPromPeso6({});
+      }
+
+      if (varsSelected[i].value === "peso.mes9") {
+        setDataPromPeso9({});
+      }
+
+      if (varsSelected[i].value === "peso.mes12") {
+        setDataPromPeso12({});
+      }
+
+      if (varsSelected[i].value === "talla.sem40") {
+        setDataPromTalla40({});
+      }
+
+      if (varsSelected[i].value === "talla.mes3") {
+        setDataPromTalla3({});
+      }
+
+      if (varsSelected[i].value === "talla.mes6") {
+        setDataPromTalla6({});
+      }
+
+      if (varsSelected[i].value === "talla.mes9") {
+        setDataPromTalla9({});
+      }
+
+      if (varsSelected[i].value === "talla.mes12") {
+        setDataPromTalla12({});
+      }
+
+      if (varsSelected[i].value === "pc.sem40") {
+        setDataPromPc40({});
+      }
+
+      if (varsSelected[i].value === "pc.mes3") {
+        setDataPromPc3({});
+      }
+
+      if (varsSelected[i].value === "pc.mes6") {
+        setDataPromPc6({});
+      }
+
+      if (varsSelected[i].value === "pc.mes9") {
+        setDataPromPc9({});
+      }
+
+      if (varsSelected[i].value === "pc.mes12") {
+        setDataPromPc12({});
+      }
+
+      if (varsSelected[i].value === "pesoAnio") {
+        setDataPesoAnio({});
+      }
+
+      if (varsSelected[i].value === "tallaAnio") {
+        setDataTallaAnio({});
+      }
+
+      if (varsSelected[i].value === "pcAnio") {
+        setDataPcAnio({});
+      }
     }
   };
 
@@ -1310,6 +1686,98 @@ const AnalysisGrowth = (props) => {
       if (varsSelected[i].value === "audiometria") {
         getRCIUaudiometria();
       }
+
+      if (varsSelected[i].value === "medidas40") {
+        getparallelCoordsMedidas("40");
+      }
+
+      if (varsSelected[i].value === "medidas3") {
+        getparallelCoordsMedidas("3");
+      }
+
+      if (varsSelected[i].value === "medidas6") {
+        getparallelCoordsMedidas("6");
+      }
+
+      if (varsSelected[i].value === "medidas9") {
+        getparallelCoordsMedidas("9");
+      }
+
+      if (varsSelected[i].value === "medidas12") {
+        getparallelCoordsMedidas("12");
+      }
+
+      if (varsSelected[i].value === "peso.sem40") {
+        getRCIUPromMedidasGrowthPeso("peso.sem40");
+      }
+
+      if (varsSelected[i].value === "peso.mes3") {
+        getRCIUPromMedidasGrowthPeso("peso.mes3");
+      }
+
+      if (varsSelected[i].value === "peso.mes6") {
+        getRCIUPromMedidasGrowthPeso("peso.mes6");
+      }
+
+      if (varsSelected[i].value === "peso.mes9") {
+        getRCIUPromMedidasGrowthPeso("peso.mes9");
+      }
+
+      if (varsSelected[i].value === "peso.mes12") {
+        getRCIUPromMedidasGrowthPeso("peso.mes12");
+      }
+
+      if (varsSelected[i].value === "talla.sem40") {
+        getRCIUPromMedidasGrowthTalla("talla.sem40");
+      }
+
+      if (varsSelected[i].value === "talla.mes3") {
+        getRCIUPromMedidasGrowthTalla("talla.mes3");
+      }
+
+      if (varsSelected[i].value === "talla.mes6") {
+        getRCIUPromMedidasGrowthTalla("talla.mes6");
+      }
+
+      if (varsSelected[i].value === "talla.mes9") {
+        getRCIUPromMedidasGrowthTalla("talla.mes9");
+      }
+
+      if (varsSelected[i].value === "talla.mes12") {
+        getRCIUPromMedidasGrowthTalla("talla.mes12");
+      }
+
+      if (varsSelected[i].value === "pc.sem40") {
+        getRCIUPromMedidasGrowthPc("pc.sem40");
+      }
+
+      if (varsSelected[i].value === "pc.mes3") {
+        getRCIUPromMedidasGrowthPc("pc.mes3");
+      }
+
+      if (varsSelected[i].value === "pc.mes6") {
+        getRCIUPromMedidasGrowthPc("pc.mes6");
+      }
+
+      if (varsSelected[i].value === "pc.mes9") {
+        getRCIUPromMedidasGrowthPc("pc.mes9");
+      }
+
+      if (varsSelected[i].value === "pc.mes12") {
+        getRCIUPromMedidasGrowthPc("pc.mes12");
+      }
+
+      if (varsSelected[i].value === "pesoAnio") {
+        getRCIUMedidaAnio("peso");
+      }
+
+      if (varsSelected[i].value === "tallaAnio") {
+        getRCIUMedidaAnio("talla");
+      }
+
+      if (varsSelected[i].value === "pcAnio") {
+        getRCIUMedidaAnio("pc");
+      }
     }
   };
 
@@ -1439,6 +1907,98 @@ const AnalysisGrowth = (props) => {
 
       if (varsSelected[i].value === "audiometria") {
         getRCIUaudiometria();
+      }
+
+      if (varsSelected[i].value === "medidas40") {
+        getparallelCoordsMedidas("40");
+      }
+
+      if (varsSelected[i].value === "medidas3") {
+        getparallelCoordsMedidas("3");
+      }
+
+      if (varsSelected[i].value === "medidas6") {
+        getparallelCoordsMedidas("6");
+      }
+
+      if (varsSelected[i].value === "medidas9") {
+        getparallelCoordsMedidas("9");
+      }
+
+      if (varsSelected[i].value === "medidas12") {
+        getparallelCoordsMedidas("12");
+      }
+
+      if (varsSelected[i].value === "peso.sem40") {
+        getRCIUPromMedidasGrowthPeso("peso.sem40");
+      }
+
+      if (varsSelected[i].value === "peso.mes3") {
+        getRCIUPromMedidasGrowthPeso("peso.mes3");
+      }
+
+      if (varsSelected[i].value === "peso.mes6") {
+        getRCIUPromMedidasGrowthPeso("peso.mes6");
+      }
+
+      if (varsSelected[i].value === "peso.mes9") {
+        getRCIUPromMedidasGrowthPeso("peso.mes9");
+      }
+
+      if (varsSelected[i].value === "peso.mes12") {
+        getRCIUPromMedidasGrowthPeso("peso.mes12");
+      }
+
+      if (varsSelected[i].value === "talla.sem40") {
+        getRCIUPromMedidasGrowthTalla("talla.sem40");
+      }
+
+      if (varsSelected[i].value === "talla.mes3") {
+        getRCIUPromMedidasGrowthTalla("talla.mes3");
+      }
+
+      if (varsSelected[i].value === "talla.mes6") {
+        getRCIUPromMedidasGrowthTalla("talla.mes6");
+      }
+
+      if (varsSelected[i].value === "talla.mes9") {
+        getRCIUPromMedidasGrowthTalla("talla.mes9");
+      }
+
+      if (varsSelected[i].value === "talla.mes12") {
+        getRCIUPromMedidasGrowthTalla("talla.mes12");
+      }
+
+      if (varsSelected[i].value === "pc.sem40") {
+        getRCIUPromMedidasGrowthPc("pc.sem40");
+      }
+
+      if (varsSelected[i].value === "pc.mes3") {
+        getRCIUPromMedidasGrowthPc("pc.mes3");
+      }
+
+      if (varsSelected[i].value === "pc.mes6") {
+        getRCIUPromMedidasGrowthPc("pc.mes6");
+      }
+
+      if (varsSelected[i].value === "pc.mes9") {
+        getRCIUPromMedidasGrowthPc("pc.mes9");
+      }
+
+      if (varsSelected[i].value === "pc.mes12") {
+        getRCIUPromMedidasGrowthPc("pc.mes12");
+      }
+
+      if (varsSelected[i].value === "pesoAnio") {
+        getRCIUMedidaAnio("peso");
+      }
+
+      if (varsSelected[i].value === "tallaAnio") {
+        getRCIUMedidaAnio("talla");
+      }
+
+      if (varsSelected[i].value === "pcAnio") {
+        getRCIUMedidaAnio("pc");
       }
     }
   };
@@ -2375,6 +2935,367 @@ const AnalysisGrowth = (props) => {
               <div className="col-4 datAbs group">
                 <h6>con RCIU</h6>
                 <GroupedBar data={dataAud3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPeso40).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a las 40 semanas</b>
+              </h6>
+              <GroupedBar
+                data={dataPromPeso40}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromTalla40).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Talla (cm) a las 40 semanas</b>
+              </h6>
+              <GroupedBar
+                data={dataPromTalla40}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPc40).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Perímetro craneal (cm) a las 40 semanas</b>
+              </h6>
+              <GroupedBar data={dataPromPc40} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {dataParallelCoordsMedidas40With.length > 0 &&
+        dataParallelCoordsMedidas40Without.length > 0 ? (
+          <div className="row pt-3">
+            <h6>
+              <b>Medidas antropométricas a las 40 semanas</b>
+            </h6>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        <div className="row">
+          <div className="col-6">
+            <div className="col-12" id="par40WithM"></div>
+          </div>
+          <div className="col-6">
+            <div className="col-12" id="par40WithoutM"></div>
+          </div>
+        </div>
+        {Object.entries(dataPromPeso3).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a los 3 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPeso3} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromTalla3).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Talla (cm) a los 3 meses</b>
+              </h6>
+              <GroupedBar
+                data={dataPromTalla3}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPc3).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Perímetro craneal (cm) a los 3 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPc3} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {dataParallelCoordsMedidas3With.length > 0 &&
+        dataParallelCoordsMedidas3Without.length > 0 ? (
+          <div className="row">
+            <h6>
+              <b>Medidas antropométricas a los 3 meses</b>
+            </h6>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        <div className="row">
+          <div className="col-6">
+            <div className="col-12" id="par3WithM"></div>
+          </div>
+          <div className="col-6">
+            <div className="col-12" id="par3WithoutM"></div>
+          </div>
+        </div>
+        {Object.entries(dataPromPeso6).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a los 6 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPeso6} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromTalla6).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Talla (cm) a los 6 meses</b>
+              </h6>
+              <GroupedBar
+                data={dataPromTalla6}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPc6).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Perímetro craneal (cm) a los 6 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPc6} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {dataParallelCoordsMedidas6With.length > 0 &&
+        dataParallelCoordsMedidas6Without.length > 0 ? (
+          <div className="row pt-3">
+            <h6>
+              <b>Medidas antropométricas a los 6 meses</b>
+            </h6>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        <div className="row">
+          <div className="col-6">
+            <div className="col-12" id="par6WithM"></div>
+          </div>
+          <div className="col-6">
+            <div className="col-12" id="par6WithoutM"></div>
+          </div>
+        </div>
+        {Object.entries(dataPromPeso9).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a los 9 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPeso9} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromTalla9).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Talla (cm) a los 9 meses</b>
+              </h6>
+              <GroupedBar
+                data={dataPromTalla9}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPc9).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Perímetro craneal (cm) a los 9 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPc9} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {dataParallelCoordsMedidas9With.length > 0 &&
+        dataParallelCoordsMedidas9Without.length > 0 ? (
+          <div className="row">
+            <h6>
+              <b>Medidas antropométricas 9 meses</b>
+            </h6>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        <div className="row">
+          <div className="col-6">
+            <div className="col-12" id="par9WithM"></div>
+          </div>
+          <div className="col-6">
+            <div className="col-12" id="par9WithoutM"></div>
+          </div>
+        </div>
+        {Object.entries(dataPromPeso12).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a los 12 meses</b>
+              </h6>
+              <GroupedBar
+                data={dataPromPeso12}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromTalla12).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Talla (cm) a los 12 meses</b>
+              </h6>
+              <GroupedBar
+                data={dataPromTalla12}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPc12).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Perímetro craneal (cm) a los 12 meses</b>
+              </h6>
+              <GroupedBar data={dataPromPc12} options={options} height={200} />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {dataParallelCoordsMedidas12With.length > 0 &&
+        dataParallelCoordsMedidas12Without.length > 0 ? (
+          <div className="row">
+            <h6>
+              <b>Medidas antropométricas a los 12 meses</b>
+            </h6>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        <div className="row">
+          <div className="col-6">
+            <div className="col-12" id="par12WithM"></div>
+          </div>
+          <div className="col-6">
+            <div className="col-12" id="par12WithoutM"></div>
+          </div>
+        </div>
+        {Object.entries(dataPesoAnio).length !== 0 ? (
+          <div className="pesoAnio">
+            <div className="row">
+              <h5>
+                <b>Promedio peso primer año de vida</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-12 datAbs2">
+                <CanvasJSChart options={dataPesoAnio} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataTallaAnio).length !== 0 ? (
+          <div className="pesoAnio">
+            <div className="row">
+              <h5>
+                <b>Promedio talla primer año de vida</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-12 datAbs2">
+                <CanvasJSChart options={dataTallaAnio} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPcAnio).length !== 0 ? (
+          <div className="pesoAnio">
+            <div className="row">
+              <h5>
+                <b>Promedio perimetro craneal primer año de vida</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-12 datAbs2">
+                <CanvasJSChart options={dataPcAnio} />
               </div>
             </div>
           </div>
