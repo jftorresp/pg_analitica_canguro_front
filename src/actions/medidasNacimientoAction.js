@@ -71,7 +71,9 @@ export const RCIUAFPromMedidaBebeNacer = async (
   fin,
   isPrem,
   variable,
-  variables
+  variables,
+  desde,
+  hasta
 ) => {
   try {
     const res = await axios.post("/api/nacimiento/RCIUAFPromMedidaBebeNacer", {
@@ -80,6 +82,8 @@ export const RCIUAFPromMedidaBebeNacer = async (
       prem: isPrem,
       var: variable,
       vars: variables,
+      desde: desde,
+      hasta: hasta,
     });
 
     return res.data;

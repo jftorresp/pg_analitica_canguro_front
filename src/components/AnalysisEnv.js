@@ -67,7 +67,7 @@ const AnalysisEnv = (props) => {
   // States for variables select
   const [dataGroup, setDataGroup] = useState([]);
   const [varsSelected, setVarsSelected] = useState([]);
-  const [filterVars, setFilterVars] = useState([]);
+  const [filterVars, setFilterVars] = useState(props.inputVars);
 
   // States for slider
   const defaultValues = [1993, 2020];

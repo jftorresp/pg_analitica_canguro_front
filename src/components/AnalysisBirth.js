@@ -18,6 +18,7 @@ import GroupedBar from "./GroupedBar";
 import GenderBase from "./GenderBase";
 import Select from "react-select";
 import Filters from "./Filters";
+import FilterRange from "./FilterRange";
 
 function AnalysisBirth(props) {
   // States for slider
@@ -281,7 +282,7 @@ function AnalysisBirth(props) {
     setdataFreqEGPremTerm(response);
   };
 
-  const getRCIUAFPromPesoBebeNacer = async () => {
+  const getRCIUAFPromPesoBebeNacer = async (d = "0", h = "0") => {
     var pesoAlNacerPrem = {};
     var pesoAlNacerTerm = {};
 
@@ -291,7 +292,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "pesoalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
 
       pesoAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -299,7 +302,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "pesoalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
     } else {
       pesoAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
@@ -307,7 +312,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "pesoalnacer",
-        []
+        [],
+        d,
+        h
       );
 
       pesoAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -315,7 +322,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "pesoalnacer",
-        []
+        [],
+        d,
+        h
       );
     }
 
@@ -323,7 +332,7 @@ function AnalysisBirth(props) {
     setPesoNacerTerm(pesoAlNacerTerm);
   };
 
-  const getRCIUAFPromTallaBebeNacer = async () => {
+  const getRCIUAFPromTallaBebeNacer = async (d = "0", h = "0") => {
     var tallaAlNacerPrem = {};
     var tallaAlNacerTerm = {};
 
@@ -333,7 +342,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "tallaalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
 
       tallaAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -341,7 +352,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "tallaalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
     } else {
       tallaAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
@@ -349,7 +362,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "tallaalnacer",
-        []
+        [],
+        d,
+        h
       );
 
       tallaAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -357,7 +372,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "tallaalnacer",
-        []
+        [],
+        d,
+        h
       );
     }
 
@@ -365,7 +382,7 @@ function AnalysisBirth(props) {
     setTallaNacerTerm(tallaAlNacerTerm);
   };
 
-  const getRCIUAFPromPCBebeNacer = async () => {
+  const getRCIUAFPromPCBebeNacer = async (d = "0", h = "0") => {
     var pcAlNacerPrem = {};
     var pcAlNacerTerm = {};
 
@@ -375,7 +392,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "pcalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
 
       pcAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -383,7 +402,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "pcalnacer",
-        filterVars
+        filterVars,
+        d,
+        h
       );
     } else {
       pcAlNacerPrem = await RCIUAFPromMedidaBebeNacer(
@@ -391,7 +412,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "true",
         "pcalnacer",
-        []
+        [],
+        d,
+        h
       );
 
       pcAlNacerTerm = await RCIUAFPromMedidaBebeNacer(
@@ -399,7 +422,9 @@ function AnalysisBirth(props) {
         anioFinal,
         "false",
         "pcalnacer",
-        []
+        [],
+        d,
+        h
       );
     }
 
@@ -512,6 +537,7 @@ function AnalysisBirth(props) {
     const finalArray = [...new Set(filterVars.concat(filArray))];
 
     setFilterVars(finalArray);
+    props.filterVariables2(finalArray);
   };
   const cleanFields = () => {
     setVarsSelected([]);
@@ -553,6 +579,82 @@ function AnalysisBirth(props) {
         setRciuRceuTerm({});
       }
     }
+  };
+
+  const [genero, setGenero] = useState("");
+
+  const generoSel = (event) => {
+    setGenero(event.target.value);
+  };
+
+  const generoFilter = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "sexo") {
+        filterVars[i].filter = filterVars[i].label + " (" + genero + ")";
+      }
+    }
+    getRCIUFreqGender();
+  };
+
+  //* Functions for filters
+
+  //* Refs for filtering data
+  let pDRef = React.createRef();
+  let pHRef = React.createRef();
+  let tDRef = React.createRef();
+  let tHRef = React.createRef();
+  let pcDRef = React.createRef();
+  let pcHRef = React.createRef();
+
+  const medidasPeso = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "pesoalnacer") {
+        filterVars[i].desde = pDRef.current.value;
+        filterVars[i].hasta = pHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          pDRef.current.value +
+          "-" +
+          pHRef.current.value;
+      }
+    }
+
+    getRCIUAFPromPesoBebeNacer(pDRef.current.value, pHRef.current.value);
+  };
+
+  const medidasTalla = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "tallaalnacer") {
+        filterVars[i].desde = tDRef.current.value;
+        filterVars[i].hasta = tHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          tDRef.current.value +
+          "-" +
+          tHRef.current.value;
+      }
+    }
+
+    getRCIUAFPromTallaBebeNacer(tDRef.current.value, tHRef.current.value);
+  };
+
+  const medidasPc = () => {
+    for (let i = 0; i < filterVars.length; i++) {
+      if (filterVars[i].value === "pcalnacer") {
+        filterVars[i].desde = pcDRef.current.value;
+        filterVars[i].hasta = pcHRef.current.value;
+        filterVars[i].filter =
+          filterVars[i].label +
+          " " +
+          pcDRef.current.value +
+          "-" +
+          pcHRef.current.value;
+      }
+    }
+
+    getRCIUAFPromPCBebeNacer(pcDRef.current.value, pcHRef.current.value);
   };
 
   useEffect(() => {
@@ -656,7 +758,24 @@ function AnalysisBirth(props) {
                 <b>Distribución de género</b>
               </h3>
             </div>
-            <div className="row pt-4">
+            <div className="row pt-2">
+              <div className="col-5">
+                <div className="input-group pb-3">
+                  <select class="form-select" onChange={generoSel}>
+                    <option>Seleccione un género</option>
+                    <option value="niño">Niño</option>
+                    <option value="niña">Niña</option>
+                  </select>
+                  <button
+                    className="input-group-text aply-btn"
+                    onClick={generoFilter}
+                  >
+                    Aplicar Filtro
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="row pt-3">
               <div className="col-6">
                 <CanvasJSChart options={dataFreqGenderPremWith} />
               </div>
@@ -723,6 +842,12 @@ function AnalysisBirth(props) {
         <div className="row">
           {Object.entries(pesoNacerPrem).length !== 0 ? (
             <div className="peso col-4">
+              <FilterRange
+                medida={"peso"}
+                medidaFilter={medidasPeso}
+                desdeInput={pDRef}
+                hastaInput={pHRef}
+              />
               <GroupedBar data={pesoNacerPrem} options={options} height={200} />
             </div>
           ) : (
@@ -730,6 +855,12 @@ function AnalysisBirth(props) {
           )}
           {Object.entries(tallaNacerPrem).length !== 0 ? (
             <div className="talla col-4">
+              <FilterRange
+                medida={"talla"}
+                medidaFilter={medidasTalla}
+                desdeInput={tDRef}
+                hastaInput={tHRef}
+              />
               <GroupedBar
                 data={tallaNacerPrem}
                 options={options}
@@ -742,6 +873,12 @@ function AnalysisBirth(props) {
 
           {Object.entries(pcNacerPrem).length !== 0 ? (
             <div className="pc col-4">
+              <FilterRange
+                medida={"pc"}
+                medidaFilter={medidasPc}
+                desdeInput={pcDRef}
+                hastaInput={pcHRef}
+              />
               <GroupedBar data={pcNacerPrem} options={options} height={200} />
             </div>
           ) : (

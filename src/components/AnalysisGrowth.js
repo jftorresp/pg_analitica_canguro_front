@@ -16,6 +16,12 @@ import {
   parallelCoordsLecheMaterna,
   getVarsByEtapaCrecimiento,
   RCIUNut4012,
+  getGriffiths,
+  RCIUInfanibProm,
+  RCIUInfanibTime,
+  RCIUoftalmologia,
+  RCIUoptometria,
+  RCIUaudiometria,
 } from "../actions/medidasCrecimientoAction";
 
 //* Components Imports
@@ -31,13 +37,16 @@ import GroupedBar from "./GroupedBar";
 import CanvasJSReact from "../assets/canvasjs.react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import Select from "react-select";
+import Filters from "./Filters";
 
-const AnalysisGrowth = () => {
+const AnalysisGrowth = (props) => {
   // States for variables select
   const [variables, setVariables] = useState([]);
   const [varsSelected, setVarsSelected] = useState([]);
   const [etapas, setEtapas] = useState([]);
   const [etapasSelected, setEtapasSelected] = useState([]);
+  const [filterVars, setFilterVars] = useState(props.inputVars);
+
   //* States for data vis
   // States for Dias Hospitalizacion
   const [dataRCIUdiasH, setDataRCIUdiasH] = useState({});
@@ -144,6 +153,37 @@ const AnalysisGrowth = () => {
   const [dataRCIUNut40, setDataRCIUNut40] = useState({});
   const [dataRCIUNut12, setDataRCIUNut12] = useState({});
 
+  const [dataGriffiths1, setDataGriffiths1] = useState({});
+  const [dataGriffiths2, setDataGriffiths2] = useState({});
+  const [dataGriffiths3, setDataGriffiths3] = useState({});
+
+  const [dataInfanib1, setDataInfanib1] = useState({});
+  const [dataInfanib2, setDataInfanib2] = useState({});
+  const [dataInfanib3, setDataInfanib3] = useState({});
+
+  const [data3MInfanib1, setData3MInfanib1] = useState({});
+  const [data3MInfanib2, setData3MInfanib2] = useState({});
+  const [data3MInfanib3, setData3MInfanib3] = useState({});
+  const [data6MInfanib1, setData6MInfanib1] = useState({});
+  const [data6MInfanib2, setData6MInfanib2] = useState({});
+  const [data6MInfanib3, setData6MInfanib3] = useState({});
+  const [data9MInfanib1, setData9MInfanib1] = useState({});
+  const [data9MInfanib2, setData9MInfanib2] = useState({});
+  const [data9MInfanib3, setData9MInfanib3] = useState({});
+  const [data12MInfanib1, setData12MInfanib1] = useState({});
+  const [data12MInfanib2, setData12MInfanib2] = useState({});
+  const [data12MInfanib3, setData12MInfanib3] = useState({});
+
+  const [dataOft1, setDataOft1] = useState({});
+  const [dataOft2, setDataOft2] = useState({});
+  const [dataOft3, setDataOft3] = useState({});
+  const [dataOpt1, setDataOpt1] = useState({});
+  const [dataOpt2, setDataOpt2] = useState({});
+  const [dataOpt3, setDataOpt3] = useState({});
+  const [dataAud1, setDataAud1] = useState({});
+  const [dataAud2, setDataAud2] = useState({});
+  const [dataAud3, setDataAud3] = useState({});
+
   //* States for years
   const [anioInicial, setAnioInicial] = useState(1993);
   const [anioFinal, setAnioFinal] = useState(2020);
@@ -176,6 +216,12 @@ const AnalysisGrowth = () => {
   var CanvasJS = CanvasJSReact.CanvasJS;
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+  CanvasJS.addColorSet("customColorSet", [
+    "#0E7FA6",
+    "#FF955B",
+    "#70D6BC",
+    "#A6330A",
+  ]);
   CanvasJS.addColorSet("customColorSetPrem", ["#0E7FA6", "#FF955B"]);
   CanvasJS.addColorSet("customColorSetTerm", ["#70D6BC", "#A6330A"]);
   CanvasJS.addColorSet("customColorSetWith", ["#0E7FA6"]);
@@ -195,41 +241,89 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIUFreqDiasH = async () => {
-    const response = await RCIUFreqDiasH(anioInicial, anioFinal);
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUFreqDiasH(anioInicial, anioFinal, variables);
+
     setDataRCIUdiasH(response);
   };
 
   const getRCIUFreqUCI = async () => {
-    const responsePrem = await RCIUFreqUCI(anioInicial, anioFinal, "true");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const responsePrem = await RCIUFreqUCI(
+      anioInicial,
+      anioFinal,
+      "true",
+      variables
+    );
+    const responseTerm = await RCIUFreqUCI(
+      anioInicial,
+      anioFinal,
+      "false",
+      variables
+    );
+
     setDataRCIUFreqUCIPrem(responsePrem);
-    const responseTerm = await RCIUFreqUCI(anioInicial, anioFinal, "false");
     setDataRCIUFreqUCITerm(responseTerm);
   };
 
   const getRCIUFreqEGEntrada = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
     const response = await RCIUFreqEGEntrada(
       anioInicial,
       anioFinal,
       "true",
-      "true"
+      "true",
+      variables
     );
+
     formatAxisTooltip(response);
     setDataRCIUFreqEGEntrada(response);
   };
 
   const getRCIUFreqEGSalida = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
     const response = await RCIUFreqEGEntrada(
       anioInicial,
       anioFinal,
       "true",
-      "false"
+      "false",
+      variables
     );
+
     formatAxisTooltip(response);
     setDataRCIUFreqEGSalida(response);
   };
 
   const getparallelPMC = async () => {
-    const response1 = await parallelPMC(anioInicial, anioFinal, "1");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await parallelPMC(anioInicial, anioFinal, "1", variables);
+    const response2 = await parallelPMC(anioInicial, anioFinal, "2", variables);
+    const response3 = await parallelPMC(anioInicial, anioFinal, "3", variables);
+
     setDataParallelPMC1(response1);
     ReactDOM.render(<p></p>, document.getElementById("parOne"));
     const div = (
@@ -241,7 +335,6 @@ const AnalysisGrowth = () => {
     );
     ReactDOM.render(div, document.getElementById("parOne"));
 
-    const response2 = await parallelPMC(anioInicial, anioFinal, "2");
     setDataParallelPMC2(response2);
     ReactDOM.render(<p></p>, document.getElementById("parTwo"));
     const div2 = (
@@ -253,7 +346,6 @@ const AnalysisGrowth = () => {
     );
     ReactDOM.render(div2, document.getElementById("parTwo"));
 
-    const response3 = await parallelPMC(anioInicial, anioFinal, "3");
     setDataParallelPMC3(response3);
     ReactDOM.render(<p></p>, document.getElementById("parThree"));
     const div3 = (
@@ -263,39 +355,87 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIUPromPesoPMC = async () => {
-    const response1 = await RCIUPromPesoPMC(anioInicial, anioFinal, "1");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUPromPesoPMC(
+      anioInicial,
+      anioFinal,
+      "1",
+      variables
+    );
+    const response2 = await RCIUPromPesoPMC(
+      anioInicial,
+      anioFinal,
+      "2",
+      variables
+    );
+    const response3 = await RCIUPromPesoPMC(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables
+    );
+
     setDataRCIUPromPeso1(response1);
 
-    const response2 = await RCIUPromPesoPMC(anioInicial, anioFinal, "2");
     setDataRCIUPromPeso2(response2);
 
-    const response3 = await RCIUPromPesoPMC(anioInicial, anioFinal, "3");
     setDataRCIUPromPeso3(response3);
   };
 
   const getRCIUOxiEntrada = async () => {
-    const response = await RCIUOxiEntrada(anioInicial, anioFinal);
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIUOxiEntrada(anioInicial, anioFinal, variables);
     setDataRCIUOxiEntrada(response);
   };
 
   const getRCIULecheMaterna = async () => {
-    const response = await RCIULecheMaterna(anioInicial, anioFinal);
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response = await RCIULecheMaterna(anioInicial, anioFinal, variables);
+
     setDataRCIULecheMaterna(response);
   };
 
   const getRCIULecheMaternaTime40 = async () => {
-    const response40 = await RCIULecheMaternaTime(anioInicial, anioFinal, "40");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response40 = await RCIULecheMaternaTime(
+      anioInicial,
+      anioFinal,
+      "40",
+      variables
+    );
     const response40With = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "40",
-      1
+      "1",
+      variables
     );
     const response40Without = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "40",
-      0
+      "0",
+      variables
     );
 
     formatAxisTooltip(response40);
@@ -305,19 +445,33 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIULecheMaternaTime3 = async () => {
-    const response3 = await RCIULecheMaternaTime(anioInicial, anioFinal, "3");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response3 = await RCIULecheMaternaTime(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables
+    );
     const response3With = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "3",
-      1
+      "1",
+      variables
     );
     const response3Without = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "3",
-      0
+      "0",
+      variables
     );
+
     formatAxisTooltip(response3);
     setDataRCIULecheMaterna3(response3);
     setDataRCIULecheMaterna3With(response3With);
@@ -325,19 +479,33 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIULecheMaternaTime6 = async () => {
-    const response6 = await RCIULecheMaternaTime(anioInicial, anioFinal, "6");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response6 = await RCIULecheMaternaTime(
+      anioInicial,
+      anioFinal,
+      "6",
+      variables
+    );
     const response6With = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "6",
-      "1"
+      "1",
+      variables
     );
     const response6Without = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "6",
-      "0"
+      "0",
+      variables
     );
+
     formatAxisTooltip(response6);
     setDataRCIULecheMaterna6(response6);
     setDataRCIULecheMaterna6With(response6With);
@@ -345,19 +513,33 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIULecheMaternaTime9 = async () => {
-    const response9 = await RCIULecheMaternaTime(anioInicial, anioFinal, "9");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response9 = await RCIULecheMaternaTime(
+      anioInicial,
+      anioFinal,
+      "9",
+      variables
+    );
     const response9With = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "9",
-      1
+      "1",
+      variables
     );
     const response9Without = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "9",
-      0
+      "0",
+      variables
     );
+
     formatAxisTooltip(response9);
     setDataRCIULecheMaterna9(response9);
     setDataRCIULecheMaterna9With(response9With);
@@ -365,19 +547,33 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIULecheMaternaTime12 = async () => {
-    const response12 = await RCIULecheMaternaTime(anioInicial, anioFinal, "12");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response12 = await RCIULecheMaternaTime(
+      anioInicial,
+      anioFinal,
+      "12",
+      variables
+    );
     const response12With = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "12",
-      1
+      "1",
+      variables
     );
     const response12Without = await RCIUAbsLecheMaternaTime(
       anioInicial,
       anioFinal,
       "12",
-      0
+      "0",
+      variables
     );
+
     formatAxisTooltip(response12);
     setDataRCIULecheMaterna12(response12);
     setDataRCIULecheMaterna12With(response12With);
@@ -385,11 +581,26 @@ const AnalysisGrowth = () => {
   };
 
   const getparallelCoordsLecheMaterna = async (time) => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
     const responseWith = await parallelCoordsLecheMaterna(
       anioInicial,
       anioFinal,
       time,
-      "1"
+      "1",
+      variables
+    );
+
+    const responseWithout = await parallelCoordsLecheMaterna(
+      anioInicial,
+      anioFinal,
+      time,
+      "0",
+      variables
     );
 
     if (time === "40") {
@@ -408,13 +619,6 @@ const AnalysisGrowth = () => {
       <ParallelCoord data={responseWith} title={"Con RCIU"} width={680} />
     );
     ReactDOM.render(div, document.getElementById(`par${time}With`));
-
-    const responseWithout = await parallelCoordsLecheMaterna(
-      anioInicial,
-      anioFinal,
-      time,
-      "0"
-    );
 
     if (time === "40") {
       setDataParallelCoordsLecheMaterna40Without(responseWithout);
@@ -435,10 +639,341 @@ const AnalysisGrowth = () => {
   };
 
   const getRCIUNut4012 = async () => {
-    const response40 = await RCIUNut4012(anioInicial, anioFinal, "40");
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response40 = await RCIUNut4012(
+      anioInicial,
+      anioFinal,
+      "40",
+      variables
+    );
     setDataRCIUNut40(response40);
-    const response12 = await RCIUNut4012(anioInicial, anioFinal, "12");
+    const response12 = await RCIUNut4012(
+      anioInicial,
+      anioFinal,
+      "12",
+      variables
+    );
     setDataRCIUNut12(response12);
+  };
+
+  const getRCIUGriffiths = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await getGriffiths(
+      anioInicial,
+      anioFinal,
+      variables,
+      "1"
+    );
+    const response2 = await getGriffiths(
+      anioInicial,
+      anioFinal,
+      variables,
+      "2"
+    );
+    const response3 = await getGriffiths(
+      anioInicial,
+      anioFinal,
+      variables,
+      "3"
+    );
+
+    setDataGriffiths1(response1);
+    setDataGriffiths2(response2);
+    setDataGriffiths3(response3);
+  };
+
+  const getRCIUInfanibProm = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUInfanibProm(
+      anioInicial,
+      anioFinal,
+      variables,
+      "1"
+    );
+    const response2 = await RCIUInfanibProm(
+      anioInicial,
+      anioFinal,
+      variables,
+      "2"
+    );
+    const response3 = await RCIUInfanibProm(
+      anioInicial,
+      anioFinal,
+      variables,
+      "3"
+    );
+
+    setDataInfanib1(response1);
+    setDataInfanib2(response2);
+    setDataInfanib3(response3);
+  };
+
+  const getRCIUInfanibTime3 = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables,
+      "1"
+    );
+
+    const response2 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables,
+      "2"
+    );
+
+    const response3 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables,
+      "3"
+    );
+
+    formatAxisTooltip(response1);
+    formatAxisTooltip(response2);
+    formatAxisTooltip(response3);
+
+    setData3MInfanib1(response1);
+    setData3MInfanib2(response2);
+    setData3MInfanib3(response3);
+  };
+
+  const getRCIUInfanibTime6 = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "3",
+      variables,
+      "1"
+    );
+
+    const response2 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "6",
+      variables,
+      "2"
+    );
+
+    const response3 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "6",
+      variables,
+      "3"
+    );
+
+    formatAxisTooltip(response1);
+    formatAxisTooltip(response2);
+    formatAxisTooltip(response3);
+
+    setData6MInfanib1(response1);
+    setData6MInfanib2(response2);
+    setData6MInfanib3(response3);
+  };
+
+  const getRCIUInfanibTime9 = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "9",
+      variables,
+      "1"
+    );
+
+    const response2 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "9",
+      variables,
+      "2"
+    );
+
+    const response3 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "9",
+      variables,
+      "3"
+    );
+
+    formatAxisTooltip(response1);
+    formatAxisTooltip(response2);
+    formatAxisTooltip(response3);
+
+    setData9MInfanib1(response1);
+    setData9MInfanib2(response2);
+    setData9MInfanib3(response3);
+  };
+
+  const getRCIUInfanibTime12 = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "12",
+      variables,
+      "1"
+    );
+
+    const response2 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "12",
+      variables,
+      "2"
+    );
+
+    const response3 = await RCIUInfanibTime(
+      anioInicial,
+      anioFinal,
+      "12",
+      variables,
+      "3"
+    );
+
+    formatAxisTooltip(response1);
+    formatAxisTooltip(response2);
+    formatAxisTooltip(response3);
+
+    setData12MInfanib1(response1);
+    setData12MInfanib2(response2);
+    setData12MInfanib3(response3);
+  };
+
+  const getRCIUoftalmologia = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUoftalmologia(
+      anioInicial,
+      anioFinal,
+      variables,
+      "1"
+    );
+    const response2 = await RCIUoftalmologia(
+      anioInicial,
+      anioFinal,
+      variables,
+      "2"
+    );
+    const response3 = await RCIUoftalmologia(
+      anioInicial,
+      anioFinal,
+      variables,
+      "3"
+    );
+
+    setDataOft1(response1);
+    setDataOft2(response2);
+    setDataOft3(response3);
+  };
+
+  const getRCIUoptometria = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUoptometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "1"
+    );
+    const response2 = await RCIUoptometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "2"
+    );
+    const response3 = await RCIUoptometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "3"
+    );
+
+    setDataOpt1(response1);
+    setDataOpt2(response2);
+    setDataOpt3(response3);
+  };
+
+  const getRCIUaudiometria = async () => {
+    var variables = [];
+
+    if (filterVars.length > 0) {
+      variables = filterVars;
+    }
+
+    const response1 = await RCIUaudiometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "1"
+    );
+    const response2 = await RCIUaudiometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "2"
+    );
+    const response3 = await RCIUaudiometria(
+      anioInicial,
+      anioFinal,
+      variables,
+      "3"
+    );
+
+    setDataAud1(response1);
+    setDataAud2(response2);
+    setDataAud3(response3);
   };
 
   // * Helper functions
@@ -478,6 +1013,7 @@ const AnalysisGrowth = () => {
   const cleanFields = () => {
     setEtapasSelected([]);
     setVarsSelected([]);
+    setVariables([]);
     for (let i = 0; i < varsSelected.length; i++) {
       if (varsSelected[i].value === "TotalDiasHospitalizacion") {
         setDataRCIUdiasH({});
@@ -584,6 +1120,65 @@ const AnalysisGrowth = () => {
         setDataRCIUNut40({});
         setDataRCIUNut12({});
       }
+
+      if (varsSelected[i].value === "CD") {
+        setDataGriffiths1({});
+        setDataGriffiths2({});
+        setDataGriffiths3({});
+      }
+
+      if (
+        varsSelected[i].value === "Infanib3m" ||
+        varsSelected[i].value === "Infanib6m" ||
+        varsSelected[i].value === "Infanib9m" ||
+        varsSelected[i].value === "Infanib12m"
+      ) {
+        setDataInfanib1({});
+        setDataInfanib2({});
+        setDataInfanib3({});
+      }
+
+      if (varsSelected[i].value === "Infanib3m") {
+        setData3MInfanib1({});
+        setData3MInfanib2({});
+        setData3MInfanib3({});
+      }
+
+      if (varsSelected[i].value === "Infanib6m") {
+        setData6MInfanib1({});
+        setData6MInfanib2({});
+        setData6MInfanib3({});
+      }
+
+      if (varsSelected[i].value === "Infanib9m") {
+        setData9MInfanib1({});
+        setData9MInfanib2({});
+        setData9MInfanib3({});
+      }
+
+      if (varsSelected[i].value === "Infanib12m") {
+        setData12MInfanib1({});
+        setData12MInfanib2({});
+        setData12MInfanib3({});
+      }
+
+      if (varsSelected[i].value === "oftalmologiafinal") {
+        setDataOft1({});
+        setDataOft2({});
+        setDataOft3({});
+      }
+
+      if (varsSelected[i].value === "resoptometria") {
+        setDataOpt1({});
+        setDataOpt2({});
+        setDataOpt3({});
+      }
+
+      if (varsSelected[i].value === "audiometria") {
+        setDataAud1({});
+        setDataAud2({});
+        setDataAud3({});
+      }
     }
   };
 
@@ -674,6 +1269,47 @@ const AnalysisGrowth = () => {
       if (varsSelected[i].value === "nut4012") {
         getRCIUNut4012();
       }
+
+      if (varsSelected[i].value === "CD") {
+        getRCIUGriffiths();
+      }
+
+      if (
+        varsSelected[i].value === "Infanib3m" ||
+        varsSelected[i].value === "Infanib6m" ||
+        varsSelected[i].value === "Infanib9m" ||
+        varsSelected[i].value === "Infanib12m"
+      ) {
+        getRCIUInfanibProm();
+      }
+
+      if (varsSelected[i].value === "Infanib3m") {
+        getRCIUInfanibTime3();
+      }
+
+      if (varsSelected[i].value === "Infanib6m") {
+        getRCIUInfanibTime6();
+      }
+
+      if (varsSelected[i].value === "Infanib9m") {
+        getRCIUInfanibTime9();
+      }
+
+      if (varsSelected[i].value === "Infanib12m") {
+        getRCIUInfanibTime12();
+      }
+
+      if (varsSelected[i].value === "oftalmologiafinal") {
+        getRCIUoftalmologia();
+      }
+
+      if (varsSelected[i].value === "resoptometria") {
+        getRCIUoptometria();
+      }
+
+      if (varsSelected[i].value === "audiometria") {
+        getRCIUaudiometria();
+      }
     }
   };
 
@@ -763,6 +1399,47 @@ const AnalysisGrowth = () => {
       if (varsSelected[i].value === "nut4012") {
         getRCIUNut4012();
       }
+
+      if (varsSelected[i].value === "CD") {
+        getRCIUGriffiths();
+      }
+
+      if (
+        varsSelected[i].value === "Infanib3m" ||
+        varsSelected[i].value === "Infanib6m" ||
+        varsSelected[i].value === "Infanib9m" ||
+        varsSelected[i].value === "Infanib12m"
+      ) {
+        getRCIUInfanibProm();
+      }
+
+      if (varsSelected[i].value === "Infanib3m") {
+        getRCIUInfanibTime3();
+      }
+
+      if (varsSelected[i].value === "Infanib6m") {
+        getRCIUInfanibTime6();
+      }
+
+      if (varsSelected[i].value === "Infanib9m") {
+        getRCIUInfanibTime9();
+      }
+
+      if (varsSelected[i].value === "Infanib12m") {
+        getRCIUInfanibTime12();
+      }
+
+      if (varsSelected[i].value === "oftalmologiafinal") {
+        getRCIUoftalmologia();
+      }
+
+      if (varsSelected[i].value === "resoptometria") {
+        getRCIUoptometria();
+      }
+
+      if (varsSelected[i].value === "audiometria") {
+        getRCIUaudiometria();
+      }
     }
   };
 
@@ -773,11 +1450,20 @@ const AnalysisGrowth = () => {
   return (
     <div className="analysisGrowth">
       <div className="container">
-        <GenderBase inicio={anioInicial} fin={anioFinal} />
+        <GenderBase
+          inicio={anioInicial}
+          fin={anioFinal}
+          vars={filterVars.length > 0 ? filterVars : []}
+        />
         <div className="row pt-4">
-          <h1 className="text-start">
-            <b>Análisis Crecimiento - RCIU</b>
-          </h1>
+          <div className="col-11">
+            <h1 className="text-start">
+              <b>Análisis Crecimiento - RCIU</b>
+            </h1>
+          </div>
+          <div className="col-1 text-end">
+            <Filters filters={filterVars} />
+          </div>
         </div>
         <div className="row pt-2">
           <p className="text-start text-justify">
@@ -1394,6 +2080,301 @@ const AnalysisGrowth = () => {
                   options={options}
                   height={200}
                 />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+
+        {Object.entries(dataGriffiths1).length !== 0 &&
+        Object.entries(dataGriffiths2).length !== 0 &&
+        Object.entries(dataGriffiths3).length !== 0 ? (
+          <div className="griffiths">
+            <div className="row pt-4">
+              <h5>
+                <b>Exámenes Griffiths 6 y 12 meses (coeficiente intelectual)</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataGriffiths1}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataGriffiths2}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4">
+                <h6>con RCIU</h6>
+                <GroupedBar
+                  data={dataGriffiths3}
+                  options={options}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataInfanib1).length !== 0 &&
+        Object.entries(dataInfanib2).length !== 0 &&
+        Object.entries(dataInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>
+                  Distribución exámenes Infanib primer año de vida (valores en
+                  %)
+                </b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataInfanib1}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataInfanib2}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4">
+                <h6>con RCIU</h6>
+                <GroupedBar
+                  data={dataInfanib3}
+                  options={options}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data3MInfanib1).length !== 0 &&
+        Object.entries(data3MInfanib2).length !== 0 &&
+        Object.entries(data3MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 3 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data3MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data3MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data3MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data6MInfanib1).length !== 0 &&
+        Object.entries(data6MInfanib2).length !== 0 &&
+        Object.entries(data6MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 6 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data6MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data6MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data6MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data9MInfanib1).length !== 0 &&
+        Object.entries(data9MInfanib2).length !== 0 &&
+        Object.entries(data9MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 9 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data9MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data9MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data9MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data12MInfanib1).length !== 0 &&
+        Object.entries(data12MInfanib2).length !== 0 &&
+        Object.entries(data12MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 12 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data12MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data12MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data12MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataOft1).length !== 0 &&
+        Object.entries(dataOft2).length !== 0 &&
+        Object.entries(dataOft3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultado Oftalmología final</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataOft1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataOft2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataOft3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataOpt1).length !== 0 &&
+        Object.entries(dataOpt2).length !== 0 &&
+        Object.entries(dataOpt3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultado Optometría</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataOpt1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataOpt2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataOpt3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataAud1).length !== 0 &&
+        Object.entries(dataAud2).length !== 0 &&
+        Object.entries(dataAud3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultado Audiometría</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataAud1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataAud2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataAud3} options={options} height={200} />
               </div>
             </div>
           </div>

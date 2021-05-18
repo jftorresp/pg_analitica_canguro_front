@@ -20,13 +20,19 @@ const Home = () => {
         <Navbar />
         <Switch>
           <Route path="/entorno">
-            <AnalysisEnv filterVariables={filterVariables} />
+            <AnalysisEnv
+              filterVariables={filterVariables}
+              inputVars={filVars}
+            />
           </Route>
           <Route path="/nacimiento">
-            <AnalysisBirth inputVars={filVars} />
+            <AnalysisBirth
+              inputVars={filVars}
+              filterVariables2={filterVariables}
+            />
           </Route>
           <Route path="/crecimiento">
-            <AnalysisGrowth />
+            <AnalysisGrowth inputVars={filVars} />
           </Route>
           <Route path="/">
             <Homepage />

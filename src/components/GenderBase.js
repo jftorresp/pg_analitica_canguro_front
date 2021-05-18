@@ -11,7 +11,12 @@ function GenderBase(props) {
   const [genderBaseData, setGenderBaseData] = useState({});
 
   const getGenderBaseData = async () => {
-    const response = await GenderBaseData(props.inicio, props.fin, props.vars);
+    var response = {};
+    if (props.vars && props.vars.length > 0) {
+      response = await GenderBaseData(props.inicio, props.fin, props.vars);
+    } else {
+      response = await GenderBaseData(props.inicio, props.fin, []);
+    }
     setGenderBaseData(response);
   };
 

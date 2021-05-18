@@ -62,19 +62,25 @@ const Filters = (props) => {
               <p>
                 <b>Filtros en los datos</b>
               </p>
-              {props.filters.map((v) => (
-                <li className="list" name={v.value}>
-                  {v.value.includes("peso") ||
-                  v.value.includes("talla") ||
-                  v.value.includes("percapita") ||
-                  v.value.includes("nivel")
-                    ? v.filter
-                    : v.label}
-                  <button className="del-btn">
-                    <FontAwesomeIcon icon={faTimes} id={v.value} />
-                  </button>
-                </li>
-              ))}
+              {props.filters
+                .filter(
+                  (v) => v.value !== "edadgestacional" || v.value !== "rciurceu"
+                )
+                .map((v) => (
+                  <li className="list" name={v.value}>
+                    {v.value.includes("peso") ||
+                    v.value.includes("talla") ||
+                    v.value.includes("pc") ||
+                    v.value.includes("percapita") ||
+                    v.value.includes("nivel") ||
+                    v.value.includes("sexo")
+                      ? v.filter
+                      : v.label}
+                    <button className="del-btn">
+                      <FontAwesomeIcon icon={faTimes} id={v.value} />
+                    </button>
+                  </li>
+                ))}
             </div>
           ) : (
             <p>No hay variables de filtro en los datos</p>

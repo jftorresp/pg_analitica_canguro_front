@@ -212,3 +212,7 @@ pre {
 .aply-btn:hover {
   background-color: #00cdd1;
 }
+
+.group {
+  height: 200px;
+}

@@ -3,13 +3,12 @@ import axios from "axios";
 //* CRECIMIENTO *//
 
 // RCIUFreqDiasH
-export const RCIUFreqDiasH = async (inicio, fin) => {
+export const RCIUFreqDiasH = async (inicio, fin, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUFreqDiasH`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUFreqDiasH`, {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
     });
 
     return res.data;
@@ -19,14 +18,13 @@ export const RCIUFreqDiasH = async (inicio, fin) => {
 };
 
 // RCIUFreqUCI
-export const RCIUFreqUCI = async (inicio, fin, isPrem) => {
+export const RCIUFreqUCI = async (inicio, fin, isPrem, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUFreqUCI`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        prem: isPrem,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUFreqUCI`, {
+      inicio: inicio,
+      fin: fin,
+      prem: isPrem,
+      vars: variables,
     });
 
     return res.data;
@@ -36,15 +34,20 @@ export const RCIUFreqUCI = async (inicio, fin, isPrem) => {
 };
 
 // RCIUFreqEGEntrada
-export const RCIUFreqEGEntrada = async (inicio, fin, isPrem, isEntrada) => {
+export const RCIUFreqEGEntrada = async (
+  inicio,
+  fin,
+  isPrem,
+  isEntrada,
+  variables
+) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUFreqEGEntrada`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        prem: isPrem,
-        entrada: isEntrada,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUFreqEGEntrada`, {
+      inicio: inicio,
+      fin: fin,
+      prem: isPrem,
+      entrada: isEntrada,
+      vars: variables,
     });
 
     return res.data;
@@ -54,14 +57,13 @@ export const RCIUFreqEGEntrada = async (inicio, fin, isPrem, isEntrada) => {
 };
 
 // parallelPMC
-export const parallelPMC = async (inicio, fin, number) => {
+export const parallelPMC = async (inicio, fin, number, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/parallelCoordsPMC`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        graph: number,
-      },
+    const res = await axios.post(`/api/crecimiento/parallelCoordsPMC`, {
+      inicio: inicio,
+      fin: fin,
+      graph: number,
+      vars: variables,
     });
 
     return res.data;
@@ -71,14 +73,13 @@ export const parallelPMC = async (inicio, fin, number) => {
 };
 
 // RCIUPromPesoPMC
-export const RCIUPromPesoPMC = async (inicio, fin, number) => {
+export const RCIUPromPesoPMC = async (inicio, fin, number, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUPromPesoPMC`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        graph: number,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUPromPesoPMC`, {
+      inicio: inicio,
+      fin: fin,
+      graph: number,
+      vars: variables,
     });
 
     return res.data;
@@ -88,13 +89,12 @@ export const RCIUPromPesoPMC = async (inicio, fin, number) => {
 };
 
 // RCIUOxiEntrada
-export const RCIUOxiEntrada = async (inicio, fin) => {
+export const RCIUOxiEntrada = async (inicio, fin, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUOxiEntrada`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUOxiEntrada`, {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
     });
 
     return res.data;
@@ -104,13 +104,12 @@ export const RCIUOxiEntrada = async (inicio, fin) => {
 };
 
 // RCIULecheMaterna
-export const RCIULecheMaterna = async (inicio, fin) => {
+export const RCIULecheMaterna = async (inicio, fin, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIULecheMaterna`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIULecheMaterna`, {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
     });
 
     return res.data;
@@ -120,14 +119,13 @@ export const RCIULecheMaterna = async (inicio, fin) => {
 };
 
 // RCIULecheMaternaTime
-export const RCIULecheMaternaTime = async (inicio, fin, time) => {
+export const RCIULecheMaternaTime = async (inicio, fin, time, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIULecheMaternaTime`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        tiempo: time,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIULecheMaternaTime`, {
+      inicio: inicio,
+      fin: fin,
+      tiempo: time,
+      vars: variables,
     });
 
     return res.data;
@@ -137,15 +135,20 @@ export const RCIULecheMaternaTime = async (inicio, fin, time) => {
 };
 
 // RCIUAbsLecheMaternaTime
-export const RCIUAbsLecheMaternaTime = async (inicio, fin, time, rciu) => {
+export const RCIUAbsLecheMaternaTime = async (
+  inicio,
+  fin,
+  time,
+  rciu,
+  variables
+) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUAbsLecheMaternaTime`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        tiempo: time,
-        rciu: rciu,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUAbsLecheMaternaTime`, {
+      inicio: inicio,
+      fin: fin,
+      tiempo: time,
+      rciu: rciu,
+      vars: variables,
     });
 
     return res.data;
@@ -154,16 +157,24 @@ export const RCIUAbsLecheMaternaTime = async (inicio, fin, time, rciu) => {
   }
 };
 
-export const parallelCoordsLecheMaterna = async (inicio, fin, time, rciu) => {
+export const parallelCoordsLecheMaterna = async (
+  inicio,
+  fin,
+  time,
+  rciu,
+  variables
+) => {
   try {
-    const res = await axios.get(`/api/crecimiento/parallelCoordsLecheMaterna`, {
-      params: {
+    const res = await axios.post(
+      `/api/crecimiento/parallelCoordsLecheMaterna`,
+      {
         inicio: inicio,
         fin: fin,
         time: time,
         rciu: rciu,
-      },
-    });
+        vars: variables,
+      }
+    );
 
     return res.data;
   } catch (error) {
@@ -198,14 +209,105 @@ export const getVarsByEtapaCrecimiento = async (etapas) => {
 };
 
 // RCIUNut4012
-export const RCIUNut4012 = async (inicio, fin, time) => {
+export const RCIUNut4012 = async (inicio, fin, time, variables) => {
   try {
-    const res = await axios.get(`/api/crecimiento/RCIUNut4012`, {
-      params: {
-        inicio: inicio,
-        fin: fin,
-        time: time,
-      },
+    const res = await axios.post(`/api/crecimiento/RCIUNut4012`, {
+      inicio: inicio,
+      fin: fin,
+      time: time,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// getGriffiths
+export const getGriffiths = async (inicio, fin, variables, graph) => {
+  try {
+    const res = await axios.post(`/api/crecimiento/getGriffiths`, {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
+      graph: graph,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUInfanibProm = async (inicio, fin, variables, graph) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUInfanibProm", {
+      inicio: inicio,
+      fin: fin,
+      vars: variables,
+      graph: graph,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUInfanibTime = async (inicio, fin, time, variables, graph) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUInfanibTime", {
+      inicio: inicio,
+      fin: fin,
+      time: time,
+      graph: graph,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUoftalmologia = async (inicio, fin, variables, graph) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUoftalmologia", {
+      inicio: inicio,
+      fin: fin,
+      graph: graph,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUoptometria = async (inicio, fin, variables, graph) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUoptometria", {
+      inicio: inicio,
+      fin: fin,
+      graph: graph,
+      vars: variables,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const RCIUaudiometria = async (inicio, fin, variables, graph) => {
+  try {
+    const res = await axios.post("/api/crecimiento/RCIUaudiometria", {
+      inicio: inicio,
+      fin: fin,
+      graph: graph,
+      vars: variables,
     });
 
     return res.data;
