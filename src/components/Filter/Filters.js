@@ -76,9 +76,9 @@ const Filters = (props) => {
                       v.value.includes("sexo")
                         ? v.filter
                         : v.label}
-                      <button className="del-btn">
+                      {/* <button className="del-btn">
                         <FontAwesomeIcon icon={faTimes} id={v.value} />
-                      </button>
+                      </button> */}
                     </li>
                   )
                 )}

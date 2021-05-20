@@ -493,12 +493,6 @@ function AnalysisBirth(props) {
         getRCIURCEUFreq();
       }
     }
-
-    var filArray = [...varsSelected];
-    const finalArray = [...new Set(filterVars.concat(filArray))];
-
-    setFilterVars(finalArray);
-    props.filterVariables2(finalArray);
   };
 
   const onChangeVars = (selected) => {
@@ -598,25 +592,6 @@ function AnalysisBirth(props) {
     }
   };
 
-  const [genero, setGenero] = useState("");
-
-  const generoSel = (event) => {
-    setGenero(event.target.value);
-  };
-
-  const generoFilter = () => {
-    var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables2(filtros);
-
-    for (let i = 0; i < filtros.length; i++) {
-      if (filtros[i].value === "sexo") {
-        filtros[i].filter = filtros[i].label + " (" + genero + ")";
-      }
-    }
-    getRCIUFreqGender();
-  };
-
   //* Functions for filters
 
   //* Refs for filtering data
@@ -627,10 +602,30 @@ function AnalysisBirth(props) {
   let pcDRef = React.createRef();
   let pcHRef = React.createRef();
 
-  const medidasPeso = () => {
+  const [genero, setGenero] = useState("");
+
+  const generoSel = (event) => {
+    setGenero(event.target.value);
+  };
+
+  const generoFilter = () => {
     var filtros = varsSelected;
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "sexo") {
+        filtros[i].filter = filtros[i].label + " (" + genero + ")";
+      }
+    }
+    getRCIUFreqGender();
+
+    filtros = filtros.filter((obj) => obj.filter !== "Sexo ()");
+
     setFilterVars(filtros);
     props.filterVariables2(filtros);
+  };
+
+  const medidasPeso = () => {
+    var filtros = varsSelected;
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "pesoalnacer") {
@@ -646,12 +641,14 @@ function AnalysisBirth(props) {
     }
 
     getRCIUAFPromPesoBebeNacer(pDRef.current.value, pHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
   };
 
   const medidasTalla = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables2(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "tallaalnacer") {
@@ -667,12 +664,14 @@ function AnalysisBirth(props) {
     }
 
     getRCIUAFPromTallaBebeNacer(tDRef.current.value, tHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
   };
 
   const medidasPc = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables2(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "pcalnacer") {
@@ -688,6 +687,10 @@ function AnalysisBirth(props) {
     }
 
     getRCIUAFPromPCBebeNacer(pcDRef.current.value, pcHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
   };
 
   useEffect(() => {

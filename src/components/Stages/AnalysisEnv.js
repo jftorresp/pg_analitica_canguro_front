@@ -800,9 +800,9 @@ const AnalysisEnv = (props) => {
       }
     }
 
-    const filter = [...varsSelected];
-    setFilterVars(filter);
-    props.filterVariables(filter);
+    // const filter = [...varsSelected];
+    // setFilterVars(filter);
+    // props.filterVariables(filter);
   };
 
   const onChangeVars = (selectedOption) => {
@@ -823,8 +823,6 @@ const AnalysisEnv = (props) => {
 
   const medidasPMama = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "pesomama") {
@@ -836,16 +834,19 @@ const AnalysisEnv = (props) => {
           pMamaDRef.current.value +
           "-" +
           pMamaHRef.current.value;
-
-        getRCIUPesoMama(pMamaDRef.current.value, pMamaHRef.current.value);
       }
     }
+
+    getRCIUPesoMama(pMamaDRef.current.value, pMamaHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   const medidasTMama = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "tallamama") {
@@ -857,16 +858,19 @@ const AnalysisEnv = (props) => {
           tMamaDRef.current.value +
           "-" +
           tMamaHRef.current.value;
-
-        getRCIUTallaMama(tMamaDRef.current.value, tMamaHRef.current.value);
       }
     }
+
+    getRCIUTallaMama(tMamaDRef.current.value, tMamaHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   const medidasPPapa = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "pesopapa") {
@@ -878,16 +882,19 @@ const AnalysisEnv = (props) => {
           pPapaDRef.current.value +
           "-" +
           pPapaHRef.current.value;
-
-        getRCIUPesoPapa(pPapaDRef.current.value, pPapaHRef.current.value);
       }
     }
+
+    getRCIUPesoPapa(pPapaDRef.current.value, pPapaHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   const medidasTPapa = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "tallapapa") {
@@ -899,16 +906,19 @@ const AnalysisEnv = (props) => {
           tPapaDRef.current.value +
           "-" +
           tPapaHRef.current.value;
-
-        getRCIUTallaPapa(tPapaDRef.current.value, tPapaHRef.current.value);
       }
     }
+
+    getRCIUTallaPapa(tPapaDRef.current.value, tPapaHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   const ingresosMama = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "percapitasalariominimo") {
@@ -920,13 +930,15 @@ const AnalysisEnv = (props) => {
           ingresosDRef.current.value +
           "-" +
           ingresosHRef.current.value;
-
-        getRCIUIngresosMama(
-          ingresosDRef.current.value,
-          ingresosHRef.current.value
-        );
       }
     }
+
+    getRCIUIngresosMama(ingresosDRef.current.value, ingresosHRef.current.value);
+
+    filtros = filtros.filter((obj) => obj.desde !== "0" && obj.hasta !== "0");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   const [estudio, setEstudio] = useState("");
@@ -937,16 +949,19 @@ const AnalysisEnv = (props) => {
 
   const estudioFilter = () => {
     var filtros = varsSelected;
-    setFilterVars(filtros);
-    props.filterVariables(filtros);
 
     for (let i = 0; i < filtros.length; i++) {
       if (filtros[i].value === "nivelmama") {
         filtros[i].filter = filtros[i].label + " (" + estudio + ")";
-
-        getRCIUEstudiosMama(estudio);
       }
     }
+
+    getRCIUEstudiosMama(estudio);
+
+    filtros = filtros.filter((obj) => obj.filter !== "Estudios mamá ()");
+
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
   };
 
   // const removeFilter = (event) => {
