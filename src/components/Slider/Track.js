@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../tooltip.css";
+import "../../styles/tooltip.css";
 
 export function Track({ source, target, getTrackProps, disabled }) {
   return (

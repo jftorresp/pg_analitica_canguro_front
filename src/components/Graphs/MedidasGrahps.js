@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import CanvasJSReact from "../assets/canvasjs.react";
+import React from "react";
+import CanvasJSReact from "../../assets/canvasjs.react";
 
 const MedidasGrahps = (props) => {
   var CanvasJSChart = CanvasJSReact.CanvasJSChart;
@@ -60,7 +60,7 @@ const MedidasGrahps = (props) => {
             ) : (
               <div className="input-group pb-3">
                 <select class="form-select" onChange={estudioSelected}>
-                  <option>Seleccione un nivel</option>
+                  <option value="">Seleccione un nivel</option>
                   <option value="primaria">Primaria</option>
                   <option value="secundaria">Secundario</option>
                   <option value="tecnico">Técnico o universitario</option>

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import "../tooltip.css";
+import "../../styles/tooltip.css";
 
 const railStyle = {
   position: "absolute",

@@ -24,22 +24,22 @@ import {
   RCIUaudiometria,
   RCIUPromMedidasGrowth,
   RCIUMedidaAnio,
-} from "../actions/medidasCrecimientoAction";
+} from "../../actions/medidasCrecimientoAction";
 
 //* Components Imports
-import ParallelCoord from "./ParallelCoord";
-import GenderBase from "./GenderBase";
-import Handle from "./Handle";
-import TooltipRail from "./TooltipRail";
-import { Track } from "./Track";
-import { Tick } from "./Tick";
-import GroupedBar from "./GroupedBar";
+import ParallelCoord from "../Graphs/ParallelCoord";
+import GenderBase from "../Graphs/GenderBase";
+import Handle from "../Slider/Handle";
+import TooltipRail from "../Slider/TooltipRail";
+import { Track } from "../Slider/Track";
+import { Tick } from "../Slider/Tick";
+import GroupedBar from "../Graphs/GroupedBar";
 
 //* Library Imports
-import CanvasJSReact from "../assets/canvasjs.react";
+import CanvasJSReact from "../../assets/canvasjs.react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import Select from "react-select";
-import Filters from "./Filters";
+import Filters from "../Filter/Filters";
 
 const AnalysisGrowth = (props) => {
   // States for variables select
@@ -2027,12 +2027,34 @@ const AnalysisGrowth = (props) => {
         </div>
         <div className="row pt-2">
           <p className="text-start text-justify">
-            En esta sección se podrán estudiar las variables antropomórficas
-            para neonatos con diferentes tipos de RCIU en diferentes intervalos
-            de tiempo. Se podrán comparar de a dos tipos de RCIU y seleccionar
-            la etapa de crecimiento de interés. La muestra de datos
-            característica es de neonatos con{" "}
-            <b>35 o menos semanas de edad gestacional</b>
+            En esta sección se podrán analizar variables relacionadas con el{" "}
+            <b>desarrollo del bebé en su primer año de vida</b>. En esta
+            análisis se podrán seleciconar diferentes subetapas:{" "}
+            <i>
+              variables generales, primeros días de vida, entrada al Programa
+              Madre Canguro (PMC), 40 semanas, 3 meses, 6 meses, 9 meses y 12
+              meses
+            </i>
+            . Al igual que en anteriores etapas, se consideran muestras de datos{" "}
+            <b>con y sin RCIU y permaturos o a término</b>. En adición, algunas
+            gráficas y variables consideran{" "}
+            <b>
+              muestras de bebés con y sin Retardo del Crecimiento Extrauterino
+              (RCEU)
+            </b>
+            , pues esta condición es de interés para el primer año de vida de
+            los bebés. En algunas de estas visualizaciones se podrá interactuar
+            con zoom y movimiento y para todos los datos y gráficas se puede
+            filtrar el intervalo de tiempo deseado entre 1993 y 2020.
+          </p>
+        </div>
+        <div className="row">
+          <p>
+            De igual manera está la función de <b>filtrado</b> en el icono a la
+            derecha, donde aparecerán las variables que estén filtrando los
+            datos. Cuando el icono cambie de color significa que tiene filtros
+            activos. Algunos filtros se agregan al dar click en <i>Consultar</i>{" "}
+            y otros se agregan directamente desde la gráfica.
           </p>
         </div>
         <div className="row">
@@ -2040,7 +2062,11 @@ const AnalysisGrowth = (props) => {
             Seleccione una o varias variables de interés para poder visualizar
             los diferentes datos. Para hacer efectiva su consulta por favor dar
             click en <i>"Consultar"</i>, si desea limpiar las variables y datos
-            dar click en <i>"Limpiar"</i>.
+            dar click en <i>"Limpiar"</i>. A algunas variables se les puede
+            aplicar filtros por rango, en estas dar click en{" "}
+            <i>"Aplicar filtro"</i> para hacerlo efectivo. Para reiniciar los
+            filtros escribir "0" en ambos rangos o seleccionar el valor inicial
+            en casos categóricos.
           </p>
         </div>
         <div className="row">
@@ -2100,7 +2126,7 @@ const AnalysisGrowth = (props) => {
               </h5>
             </div>
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 group">
                 {" "}
                 <GroupedBar
                   data={dataRCIUdiasH}
@@ -2210,7 +2236,7 @@ const AnalysisGrowth = (props) => {
               </h5>
             </div>
             <div className="row">
-              <div className="col-4">
+              <div className="col-4 group">
                 <h6>
                   <b>sin RCIU y con RCEU</b>
                 </h6>
@@ -2220,7 +2246,7 @@ const AnalysisGrowth = (props) => {
                   height={100}
                 />
               </div>
-              <div className="col-4">
+              <div className="col-4 group">
                 <h6>
                   <b>sin RCIU y sin RCEU</b>
                 </h6>
@@ -2230,7 +2256,7 @@ const AnalysisGrowth = (props) => {
                   height={100}
                 />
               </div>
-              <div className="col-4">
+              <div className="col-4 group">
                 <h6>
                   <b>con RCIU</b>
                 </h6>
@@ -2247,7 +2273,7 @@ const AnalysisGrowth = (props) => {
         )}
         {Object.entries(dataRCIUOxiEntrada).length !== 0 ? (
           <div className="oxi">
-            <div className="row">
+            <div className="row pt-5">
               <h5>
                 <b>Ingreso al programa canguro con oxígeno</b>
               </h5>
@@ -2327,7 +2353,7 @@ const AnalysisGrowth = (props) => {
               </h5>
             </div>
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 group">
                 <GroupedBar
                   data={dataRCIULecheMaterna}
                   options={options}
@@ -2605,355 +2631,27 @@ const AnalysisGrowth = (props) => {
             <div className="col-12" id="par12Without"></div>
           </div>
         </div>
-        {Object.entries(dataRCIUNut40).length !== 0 &&
-        Object.entries(dataRCIUNut12).length !== 0 ? (
+        {(Object.entries(dataRCIUNut40).length !== 0 &&
+          Object.entries(dataRCIUNut12).length !== 0) ||
+        Object.entries(dataPromPeso40).length !== 0 ||
+        Object.entries(dataPromTalla40).length !== 0 ||
+        Object.entries(dataPromPc40).length !== 0 ||
+        Object.entries(dataPromPeso3).length !== 0 ||
+        Object.entries(dataPromTalla3).length !== 0 ||
+        Object.entries(dataPromPc3).length !== 0 ||
+        Object.entries(dataPromPeso6).length !== 0 ||
+        Object.entries(dataPromTalla6).length !== 0 ||
+        Object.entries(dataPromPc6).length !== 0 ||
+        Object.entries(dataPromPeso9).length !== 0 ||
+        Object.entries(dataPromTalla9).length !== 0 ||
+        Object.entries(dataPromPc9).length !== 0 ||
+        Object.entries(dataPromPeso12).length !== 0 ||
+        Object.entries(dataPromTalla12).length !== 0 ||
+        Object.entries(dataPromPc12).length !== 0 ? (
           <div className="row pt-4">
             <h3>
               <b>Medidas antropométricas seguimiento con y sin RCIU</b>
             </h3>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataRCIUNut40).length !== 0 &&
-        Object.entries(dataRCIUNut12).length !== 0 ? (
-          <div className="nu4012">
-            <div className="row">
-              <h5>
-                <b>
-                  Nutrición general 40 semanas y 12 meses ({anioInicial} -{" "}
-                  {anioFinal})
-                </b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-6">
-                <GroupedBar
-                  data={dataRCIUNut40}
-                  options={options}
-                  height={200}
-                />
-              </div>
-              <div className="col-6">
-                <GroupedBar
-                  data={dataRCIUNut12}
-                  options={options}
-                  height={200}
-                />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-
-        {Object.entries(dataGriffiths1).length !== 0 &&
-        Object.entries(dataGriffiths2).length !== 0 &&
-        Object.entries(dataGriffiths3).length !== 0 ? (
-          <div className="griffiths">
-            <div className="row pt-4">
-              <h5>
-                <b>Exámenes Griffiths 6 y 12 meses (coeficiente intelectual)</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4">
-                <h6>sin RCIU y con RCEU</h6>
-                <GroupedBar
-                  data={dataGriffiths1}
-                  options={options}
-                  height={200}
-                />
-              </div>
-              <div className="col-4">
-                <h6>sin RCIU y sin RCEU</h6>
-                <GroupedBar
-                  data={dataGriffiths2}
-                  options={options}
-                  height={200}
-                />
-              </div>
-              <div className="col-4">
-                <h6>con RCIU</h6>
-                <GroupedBar
-                  data={dataGriffiths3}
-                  options={options}
-                  height={200}
-                />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataInfanib1).length !== 0 &&
-        Object.entries(dataInfanib2).length !== 0 &&
-        Object.entries(dataInfanib3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>
-                  Distribución exámenes Infanib primer año de vida (valores en
-                  %)
-                </b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4">
-                <h6>sin RCIU y con RCEU</h6>
-                <GroupedBar
-                  data={dataInfanib1}
-                  options={options}
-                  height={200}
-                />
-              </div>
-              <div className="col-4">
-                <h6>sin RCIU y sin RCEU</h6>
-                <GroupedBar
-                  data={dataInfanib2}
-                  options={options}
-                  height={200}
-                />
-              </div>
-              <div className="col-4">
-                <h6>con RCIU</h6>
-                <GroupedBar
-                  data={dataInfanib3}
-                  options={options}
-                  height={200}
-                />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(data3MInfanib1).length !== 0 &&
-        Object.entries(data3MInfanib2).length !== 0 &&
-        Object.entries(data3MInfanib3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultados exámen Infanib a los 3 meses</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y con RCEU</h6>
-                <CanvasJSChart options={data3MInfanib1} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y sin RCEU</h6>
-                <CanvasJSChart options={data3MInfanib2} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>con RCIU</h6>
-                <CanvasJSChart options={data3MInfanib3} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(data6MInfanib1).length !== 0 &&
-        Object.entries(data6MInfanib2).length !== 0 &&
-        Object.entries(data6MInfanib3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultados exámen Infanib a los 6 meses</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y con RCEU</h6>
-                <CanvasJSChart options={data6MInfanib1} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y sin RCEU</h6>
-                <CanvasJSChart options={data6MInfanib2} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>con RCIU</h6>
-                <CanvasJSChart options={data6MInfanib3} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(data9MInfanib1).length !== 0 &&
-        Object.entries(data9MInfanib2).length !== 0 &&
-        Object.entries(data9MInfanib3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultados exámen Infanib a los 9 meses</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y con RCEU</h6>
-                <CanvasJSChart options={data9MInfanib1} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y sin RCEU</h6>
-                <CanvasJSChart options={data9MInfanib2} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>con RCIU</h6>
-                <CanvasJSChart options={data9MInfanib3} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(data12MInfanib1).length !== 0 &&
-        Object.entries(data12MInfanib2).length !== 0 &&
-        Object.entries(data12MInfanib3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultados exámen Infanib a los 12 meses</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y con RCEU</h6>
-                <CanvasJSChart options={data12MInfanib1} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>sin RCIU y sin RCEU</h6>
-                <CanvasJSChart options={data12MInfanib2} />
-              </div>
-              <div className="col-4 datAbs">
-                <h6>con RCIU</h6>
-                <CanvasJSChart options={data12MInfanib3} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataOft1).length !== 0 &&
-        Object.entries(dataOft2).length !== 0 &&
-        Object.entries(dataOft3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultado Oftalmología final</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y con RCEU</h6>
-                <GroupedBar
-                  data={dataOft1}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y sin RCEU</h6>
-                <GroupedBar
-                  data={dataOft2}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>con RCIU</h6>
-                <GroupedBar data={dataOft3} options={options} height={200} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataOpt1).length !== 0 &&
-        Object.entries(dataOpt2).length !== 0 &&
-        Object.entries(dataOpt3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultado Optometría</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y con RCEU</h6>
-                <GroupedBar
-                  data={dataOpt1}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y sin RCEU</h6>
-                <GroupedBar
-                  data={dataOpt2}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>con RCIU</h6>
-                <GroupedBar data={dataOpt3} options={options} height={200} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataAud1).length !== 0 &&
-        Object.entries(dataAud2).length !== 0 &&
-        Object.entries(dataAud3).length !== 0 ? (
-          <div className="infanib">
-            <div className="row pt-4">
-              <h5>
-                <b>Resultado Audiometría</b>
-              </h5>
-            </div>
-            <div className="row">
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y con RCEU</h6>
-                <GroupedBar
-                  data={dataAud1}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>sin RCIU y sin RCEU</h6>
-                <GroupedBar
-                  data={dataAud2}
-                  options={options}
-                  height={200}
-                />{" "}
-              </div>
-              <div className="col-4 datAbs group">
-                <h6>con RCIU</h6>
-                <GroupedBar data={dataAud3} options={options} height={200} />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="m-0"></p>
-        )}
-        {Object.entries(dataPromPeso40).length !== 0 ? (
-          <div className="row pt-3">
-            <div className="col-12">
-              {" "}
-              <h6>
-                <b>Peso (gr) a las 40 semanas</b>
-              </h6>
-              <GroupedBar
-                data={dataPromPeso40}
-                options={options}
-                height={200}
-              />
-            </div>
           </div>
         ) : (
           <p className="m-0"></p>
@@ -3254,6 +2952,349 @@ const AnalysisGrowth = (props) => {
             <div className="col-12" id="par12WithoutM"></div>
           </div>
         </div>
+        {Object.entries(dataRCIUNut40).length !== 0 &&
+        Object.entries(dataRCIUNut12).length !== 0 ? (
+          <div className="nu4012">
+            <div className="row">
+              <h5>
+                <b>
+                  Nutrición general 40 semanas y 12 meses ({anioInicial} -{" "}
+                  {anioFinal})
+                </b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-6 group">
+                <GroupedBar
+                  data={dataRCIUNut40}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-6 group">
+                <GroupedBar
+                  data={dataRCIUNut12}
+                  options={options}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+
+        {Object.entries(dataGriffiths1).length !== 0 &&
+        Object.entries(dataGriffiths2).length !== 0 &&
+        Object.entries(dataGriffiths3).length !== 0 ? (
+          <div className="griffiths">
+            <div className="row pt-4">
+              <h5>
+                <b>Exámenes Griffiths 6 y 12 meses (coeficiente intelectual)</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataGriffiths1}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4 group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataGriffiths2}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4 group">
+                <h6>con RCIU</h6>
+                <GroupedBar
+                  data={dataGriffiths3}
+                  options={options}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataInfanib1).length !== 0 &&
+        Object.entries(dataInfanib2).length !== 0 &&
+        Object.entries(dataInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>
+                  Distribución exámenes Infanib primer año de vida (valores en
+                  %)
+                </b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataInfanib1}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4 group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataInfanib2}
+                  options={options}
+                  height={200}
+                />
+              </div>
+              <div className="col-4 group">
+                <h6>con RCIU</h6>
+                <GroupedBar
+                  data={dataInfanib3}
+                  options={options}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data3MInfanib1).length !== 0 &&
+        Object.entries(data3MInfanib2).length !== 0 &&
+        Object.entries(data3MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 3 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data3MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data3MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data3MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data6MInfanib1).length !== 0 &&
+        Object.entries(data6MInfanib2).length !== 0 &&
+        Object.entries(data6MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 6 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data6MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data6MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data6MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data9MInfanib1).length !== 0 &&
+        Object.entries(data9MInfanib2).length !== 0 &&
+        Object.entries(data9MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 9 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data9MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data9MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data9MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(data12MInfanib1).length !== 0 &&
+        Object.entries(data12MInfanib2).length !== 0 &&
+        Object.entries(data12MInfanib3).length !== 0 ? (
+          <div className="infanib">
+            <div className="row pt-4">
+              <h5>
+                <b>Resultados exámen Infanib a los 12 meses</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y con RCEU</h6>
+                <CanvasJSChart options={data12MInfanib1} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>sin RCIU y sin RCEU</h6>
+                <CanvasJSChart options={data12MInfanib2} />
+              </div>
+              <div className="col-4 datAbs">
+                <h6>con RCIU</h6>
+                <CanvasJSChart options={data12MInfanib3} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataOft1).length !== 0 &&
+        Object.entries(dataOft2).length !== 0 &&
+        Object.entries(dataOft3).length !== 0 ? (
+          <div className="oft">
+            <div className="row pt-5">
+              <h5>
+                <b>Resultado Oftalmología final</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataOft1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataOft2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataOft3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataOpt1).length !== 0 &&
+        Object.entries(dataOpt2).length !== 0 &&
+        Object.entries(dataOpt3).length !== 0 ? (
+          <div className="opt">
+            <div className="row pt-5">
+              <h5>
+                <b>Resultado Optometría</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataOpt1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataOpt2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataOpt3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataAud1).length !== 0 &&
+        Object.entries(dataAud2).length !== 0 &&
+        Object.entries(dataAud3).length !== 0 ? (
+          <div className="aud">
+            <div className="row pt-5">
+              <h5>
+                <b>Resultado Audiometría</b>
+              </h5>
+            </div>
+            <div className="row">
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y con RCEU</h6>
+                <GroupedBar
+                  data={dataAud1}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>sin RCIU y sin RCEU</h6>
+                <GroupedBar
+                  data={dataAud2}
+                  options={options}
+                  height={200}
+                />{" "}
+              </div>
+              <div className="col-4 datAbs group">
+                <h6>con RCIU</h6>
+                <GroupedBar data={dataAud3} options={options} height={200} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
+        {Object.entries(dataPromPeso40).length !== 0 ? (
+          <div className="row pt-3">
+            <div className="col-12">
+              {" "}
+              <h6>
+                <b>Peso (gr) a las 40 semanas</b>
+              </h6>
+              <GroupedBar
+                data={dataPromPeso40}
+                options={options}
+                height={200}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="m-0"></p>
+        )}
         {Object.entries(dataPesoAnio).length !== 0 ? (
           <div className="pesoAnio">
             <div className="row">

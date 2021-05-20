@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Navbar from "./Navbar";
-import AnalysisEnv from "./AnalysisEnv";
-import AnalysisGrowth from "./AnalysisGrowth";
-import AnalysisBirth from "./AnalysisBirth";
+import AnalysisEnv from "./Stages/AnalysisEnv";
+import AnalysisGrowth from "./Stages/AnalysisGrowth";
+import AnalysisBirth from "./Stages/AnalysisBirth";
 import Homepage from "./Homepage";
 
 const Home = () => {

@@ -9,18 +9,18 @@ import {
   RCIUAntEntornoVars,
   RCIURFEstudiosMadre,
   RCIURFIngresosMadre,
-} from "../actions/medidasEntornoAction";
-import CanvasJSReact from "../assets/canvasjs.react";
+} from "../../actions/medidasEntornoAction";
+import CanvasJSReact from "../../assets/canvasjs.react";
 import Select from "react-select";
-import MedidasGraphs from "./MedidasGrahps";
-import GenderBase from "./GenderBase";
+import MedidasGraphs from "../Graphs/MedidasGrahps";
+import GenderBase from "../Graphs/GenderBase";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
-import Handle from "./Handle";
-import TooltipRail from "./TooltipRail";
-import { Track } from "./Track";
-import { Tick } from "./Tick";
+import Handle from "../Slider/Handle";
+import TooltipRail from "../Slider/TooltipRail";
+import { Track } from "../Slider/Track";
+import { Tick } from "../Slider/Tick";
 
-import Filters from "./Filters";
+import Filters from "../Filter/Filters";
 
 const AnalysisEnv = (props) => {
   /* States gráficas principales */
@@ -621,8 +621,28 @@ const AnalysisEnv = (props) => {
       }
     }
 
-    setFilterVars(varsSelected);
-    props.filterVariables(varsSelected);
+    // var filter = varsSelected.filter(
+    //   (obj) =>
+    //     ((!obj.value.includes("peso") || !obj.value.includes("talla")) &&
+    //       obj.hasOwnProperty("filter")) === true
+    // );
+
+    const filter = [...varsSelected];
+    for (let i = 0; i < filter.length; i++) {
+      if (
+        ((filter[i].value.includes("peso") ||
+          filter[i].value.includes("talla") ||
+          filter[i].value.includes("percapita")) &&
+          !filter[i].hasOwnProperty("filter")) ||
+        (filter[i].value.includes("nivel") &&
+          !filter[i].hasOwnProperty("estudio"))
+      ) {
+        filter.splice(filter.indexOf(filter[i]), 1);
+      }
+    }
+
+    setFilterVars(filter);
+    props.filterVariables(filter);
   };
 
   // Vacía los campos de los selects y de los estados relacionados con los datos
@@ -779,6 +799,10 @@ const AnalysisEnv = (props) => {
         getRCIUIngresosMama();
       }
     }
+
+    const filter = [...varsSelected];
+    setFilterVars(filter);
+    props.filterVariables(filter);
   };
 
   const onChangeVars = (selectedOption) => {
@@ -798,12 +822,16 @@ const AnalysisEnv = (props) => {
   let ingresosHRef = React.createRef();
 
   const medidasPMama = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "pesomama") {
-        filterVars[i].desde = pMamaDRef.current.value;
-        filterVars[i].hasta = pMamaHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "pesomama") {
+        filtros[i].desde = pMamaDRef.current.value;
+        filtros[i].hasta = pMamaHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           pMamaDRef.current.value +
           "-" +
@@ -815,12 +843,16 @@ const AnalysisEnv = (props) => {
   };
 
   const medidasTMama = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "tallamama") {
-        filterVars[i].desde = tMamaDRef.current.value;
-        filterVars[i].hasta = tMamaHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "tallamama") {
+        filtros[i].desde = tMamaDRef.current.value;
+        filtros[i].hasta = tMamaHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           tMamaDRef.current.value +
           "-" +
@@ -832,12 +864,16 @@ const AnalysisEnv = (props) => {
   };
 
   const medidasPPapa = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "pesopapa") {
-        filterVars[i].desde = pPapaDRef.current.value;
-        filterVars[i].hasta = pPapaHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "pesopapa") {
+        filtros[i].desde = pPapaDRef.current.value;
+        filtros[i].hasta = pPapaHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           pPapaDRef.current.value +
           "-" +
@@ -849,12 +885,16 @@ const AnalysisEnv = (props) => {
   };
 
   const medidasTPapa = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "tallapapa") {
-        filterVars[i].desde = tPapaDRef.current.value;
-        filterVars[i].hasta = tPapaHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "tallapapa") {
+        filtros[i].desde = tPapaDRef.current.value;
+        filtros[i].hasta = tPapaHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           tPapaDRef.current.value +
           "-" +
@@ -866,12 +906,16 @@ const AnalysisEnv = (props) => {
   };
 
   const ingresosMama = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "percapitasalariominimo") {
-        filterVars[i].desde = ingresosDRef.current.value;
-        filterVars[i].hasta = ingresosHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "percapitasalariominimo") {
+        filtros[i].desde = ingresosDRef.current.value;
+        filtros[i].hasta = ingresosHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           ingresosDRef.current.value +
           "-" +
@@ -892,14 +936,25 @@ const AnalysisEnv = (props) => {
   };
 
   const estudioFilter = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "nivelmama") {
-        filterVars[i].filter = filterVars[i].label + " (" + estudio + ")";
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "nivelmama") {
+        filtros[i].filter = filtros[i].label + " (" + estudio + ")";
 
         getRCIUEstudiosMama(estudio);
       }
     }
   };
+
+  // const removeFilter = (event) => {
+  //   const index = filterVars.indexOf(event.target.id);
+  //   filterVars.splice(index, 1);
+  //   graphData();
+  //   console.log(filterVars);
+  // };
 
   //* Render
 
@@ -925,10 +980,23 @@ const AnalysisEnv = (props) => {
           <p>
             En esta sección se encuentran diferentes visualizaciones referentes
             a variables prenatales y del entorno previo al nacimiento del bebé
-            comparalables para pacientes con y sin RCIU a término y prematuros.
-            En algunas de estas visualizaciones se podrá interactuar con zoom y
-            movimiento y para todos los análisis se puede escoger el intervalo
+            comparables para pacientes{" "}
+            <b>
+              con y sin Retardo del Crecimiento Intrauterino (RCIU) y a término
+              o prematuros ({"<"} 37 semanas de edad gestacional al nacer)
+            </b>
+            . En algunas de estas visualizaciones se podrá interactuar con zoom
+            y movimiento y para todos los análisis se puede escoger el intervalo
             de tiempo deseado entre 1993 a 2020.
+          </p>
+        </div>
+        <div className="row">
+          <p>
+            De igual manera está la función de <b>filtrado</b> en el icono a la
+            derecha, donde aparecerán las variables que estén filtrando los
+            datos. Cuando el icono cambie de color significa que tiene filtros
+            activos. Algunos filtros se agregan al dar click en <i>Consultar</i>{" "}
+            y otros se agregan directamente desde la gráfica.
           </p>
         </div>
         <div className="row pt-2">
@@ -936,11 +1004,12 @@ const AnalysisEnv = (props) => {
             <b>Frecuencia de RCIU en intervalos de años</b>
           </h3>
           <p>
-            A continuación, se muestran las frecuencias absolutas y relativas de
-            RCIU en intervalos de años. Estas gráficas iniciales toman como
-            muestra todos los datos y los procentajes son relativos a este. Más
-            adelante será posible realizar comparaciones con distintas muestras
-            de interés.
+            A continuación, se muestran las{" "}
+            <b>
+              frecuencias absolutas y relativas de RCIU en intervalos de años
+            </b>
+            . Estas gráficas iniciales toman como muestra todos los datos y los
+            porcentajes son relativos a este.
           </p>
         </div>
         <div className="row pt-4">
@@ -959,18 +1028,17 @@ const AnalysisEnv = (props) => {
           </div>
           <div className="row">
             <p>
-              Los datos mostrados a continuación muestran{" "}
-              <b>frecuencias relativas</b> a una muestra total. Para el análisis
-              de los datos se tomarán <b>cuatro muestras</b> significativas
-              separadas en dos. La primera distinción es la de bebés{" "}
-              <b>prematuros</b>, que son aquellos que tienen{" "}
-              <b>menos de 37 semanas de edad gestacional al nacer</b> y los{" "}
-              <b> a término</b> que tienen más de 37 semanas. De igual manera la
-              otra distinción es la muestra de <b>RCIU</b>, para esta se tomó en
-              cuenta el <b>peso de los bebés</b> como variable común para poder
-              clasificar a los bebés con Restricción del Crecimiento
-              Intrauterino. Para todas las gráficas mostradas se pueden agregar{" "}
-              <b>variables prenatales</b> de interés que cambiarán el
+              Los datos a continuación muestran <b>frecuencias relativas</b> a
+              una muestra total. Para el análisis de los datos se tomarán{" "}
+              <b>cuatro muestras</b> significativas separadas en dos. La primera
+              distinción es la de bebés <b>prematuros</b>, que son aquellos que
+              tienen <b>menos de 37 semanas de edad gestacional al nacer</b> y
+              los <b> a término</b> que tienen más de 37 semanas. De igual
+              manera la otra distinción es la muestra de <b>RCIU</b>, para esta
+              se tomó en cuenta el <b>peso de los bebés</b> como variable común
+              para poder clasificar a los bebés con Retardo del Crecimiento
+              Intrauterino. Para algunas de las gráficas mostradas se podrán
+              agregar <b>variables prenatales</b> de interés que cambiarán el
               comportamiento de las curvas. Igualmente se pueden seleccionar los{" "}
               <b>años de interés</b> entre 1993 a 2020.
             </p>
@@ -981,7 +1049,11 @@ const AnalysisEnv = (props) => {
                 Seleccione una o varias variables de interés para poder
                 visualizar los diferentes datos. Para hacer efectiva su consulta
                 por favor dar click en <i>"Consultar"</i>, si desea limpiar las
-                variables y datos dar click en <i>"Limpiar"</i>.
+                variables y datos dar click en <i>"Limpiar"</i>. A algunas
+                variables se les puede aplicar filtros por rango, en estas dar
+                click en <i>"Aplicar filtro"</i> para hacerlo efectivo. Para
+                reiniciar los filtros escribir "0" en ambos rangos o seleccionar
+                el valor inicial en casos categóricos.
               </p>
             </div>
             <div className="row">
@@ -1026,8 +1098,8 @@ const AnalysisEnv = (props) => {
               </div>
             </div>
             <div className="row">
-              {filterVars &&
-                filterVars.map((variable) =>
+              {varsSelected &&
+                varsSelected.map((variable) =>
                   variable.value === "pesomama" ? (
                     <MedidasGraphs
                       dataMedida={dataPesoMadrePrem}
@@ -1115,8 +1187,8 @@ const AnalysisEnv = (props) => {
             </div>
           </div>
           <div className="row">
-            {filterVars &&
-              filterVars.map((variable) =>
+            {varsSelected &&
+              varsSelected.map((variable) =>
                 variable.value === "pesomama" ? (
                   <MedidasGraphs
                     dataMedida={dataPesoMadreTerm}

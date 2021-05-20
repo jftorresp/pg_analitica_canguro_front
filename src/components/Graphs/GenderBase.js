@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GenderBaseData } from "../actions/medidasAction";
+import { GenderBaseData } from "../../actions/medidasAction";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faVenus,

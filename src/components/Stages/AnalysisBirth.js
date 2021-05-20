@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
-import Handle from "./Handle";
-import TooltipRail from "./TooltipRail";
-import { Track } from "./Track";
-import { Tick } from "./Tick";
+import Handle from "../Slider/Handle";
+import TooltipRail from "../Slider/TooltipRail";
+import { Track } from "../Slider/Track";
+import { Tick } from "../Slider/Tick";
 import {
   RCIUFreqCesarea,
   RCIUFreqGender,
@@ -12,13 +12,13 @@ import {
   RCIUAFPromMedidaBebeNacer,
   RCIURCEUFreq,
   RCIUAntNacimientoVars,
-} from "../actions/medidasNacimientoAction";
-import CanvasJSReact from "../assets/canvasjs.react";
-import GroupedBar from "./GroupedBar";
-import GenderBase from "./GenderBase";
+} from "../../actions/medidasNacimientoAction";
+import CanvasJSReact from "../../assets/canvasjs.react";
+import GroupedBar from "../Graphs/GroupedBar";
+import GenderBase from "../Graphs/GenderBase";
 import Select from "react-select";
-import Filters from "./Filters";
-import FilterRange from "./FilterRange";
+import Filters from "../Filter/Filters";
+import FilterRange from "../Filter/FilterRange";
 
 function AnalysisBirth(props) {
   // States for slider
@@ -493,6 +493,12 @@ function AnalysisBirth(props) {
         getRCIURCEUFreq();
       }
     }
+
+    var filArray = [...varsSelected];
+    const finalArray = [...new Set(filterVars.concat(filArray))];
+
+    setFilterVars(finalArray);
+    props.filterVariables2(finalArray);
   };
 
   const onChangeVars = (selected) => {
@@ -500,10 +506,7 @@ function AnalysisBirth(props) {
   };
 
   const graphData = () => {
-    var filArray = [];
     for (let i = 0; i < varsSelected.length; i++) {
-      filArray.push(varsSelected[i]);
-
       if (varsSelected[i].value === "cesarea") {
         getRCIUFreqCesarea();
       }
@@ -534,7 +537,21 @@ function AnalysisBirth(props) {
       }
     }
 
+    var filArray = [...varsSelected];
     const finalArray = [...new Set(filterVars.concat(filArray))];
+    for (let i = 0; i < finalArray.length; i++) {
+      if (
+        finalArray[i].value === "edadgestacional" ||
+        finalArray[i].value === "rciurceu" ||
+        ((finalArray[i].value === "sexo" ||
+          finalArray[i].value.includes("peso") ||
+          finalArray[i].value.includes("talla") ||
+          finalArray[i].value.includes("pc")) &&
+          !finalArray[i].hasOwnProperty("filter"))
+      ) {
+        finalArray.splice(finalArray.indexOf(finalArray[i], 1));
+      }
+    }
 
     setFilterVars(finalArray);
     props.filterVariables2(finalArray);
@@ -588,9 +605,13 @@ function AnalysisBirth(props) {
   };
 
   const generoFilter = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "sexo") {
-        filterVars[i].filter = filterVars[i].label + " (" + genero + ")";
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "sexo") {
+        filtros[i].filter = filtros[i].label + " (" + genero + ")";
       }
     }
     getRCIUFreqGender();
@@ -607,12 +628,16 @@ function AnalysisBirth(props) {
   let pcHRef = React.createRef();
 
   const medidasPeso = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "pesoalnacer") {
-        filterVars[i].desde = pDRef.current.value;
-        filterVars[i].hasta = pHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "pesoalnacer") {
+        filtros[i].desde = pDRef.current.value;
+        filtros[i].hasta = pHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           pDRef.current.value +
           "-" +
@@ -624,12 +649,16 @@ function AnalysisBirth(props) {
   };
 
   const medidasTalla = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "tallaalnacer") {
-        filterVars[i].desde = tDRef.current.value;
-        filterVars[i].hasta = tHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "tallaalnacer") {
+        filtros[i].desde = tDRef.current.value;
+        filtros[i].hasta = tHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           tDRef.current.value +
           "-" +
@@ -641,12 +670,16 @@ function AnalysisBirth(props) {
   };
 
   const medidasPc = () => {
-    for (let i = 0; i < filterVars.length; i++) {
-      if (filterVars[i].value === "pcalnacer") {
-        filterVars[i].desde = pcDRef.current.value;
-        filterVars[i].hasta = pcHRef.current.value;
-        filterVars[i].filter =
-          filterVars[i].label +
+    var filtros = varsSelected;
+    setFilterVars(filtros);
+    props.filterVariables2(filtros);
+
+    for (let i = 0; i < filtros.length; i++) {
+      if (filtros[i].value === "pcalnacer") {
+        filtros[i].desde = pcDRef.current.value;
+        filtros[i].hasta = pcHRef.current.value;
+        filtros[i].filter =
+          filtros[i].label +
           " " +
           pcDRef.current.value +
           "-" +
@@ -685,7 +718,7 @@ function AnalysisBirth(props) {
             <b>variables perinatales</b> a lo largo del tiempo, para distintas{" "}
             <b>muestras de interés</b> en pacientes{" "}
             <b>
-              con y sin Restricción del Crecimiento Intrauterino (RCIU) y bebés
+              con y sin Retardo del Crecimiento Intrauterino (RCIU) y bebés
               prematuros (menos de 37 semanas de edad gestacional) o a término
               (más de 37 semanas)
             </b>
@@ -696,10 +729,23 @@ function AnalysisBirth(props) {
         </div>
         <div className="row">
           <p>
+            De igual manera está la función de <b>filtrado</b> en el icono a la
+            derecha, donde aparecerán las variables que estén filtrando los
+            datos. Cuando el icono cambie de color significa que tiene filtros
+            activos. Algunos filtros se agregan al dar click en <i>Consultar</i>{" "}
+            y otros se agregan directamente desde la gráfica.
+          </p>
+        </div>
+        <div className="row">
+          <p>
             Seleccione una o varias variables de interés para poder visualizar
             los diferentes datos. Para hacer efectiva su consulta por favor dar
             click en <i>"Consultar"</i>, si desea limpiar las variables y datos
-            dar click en <i>"Limpiar"</i>.
+            dar click en <i>"Limpiar"</i>. A algunas variables se les puede
+            aplicar filtros por rango, en estas dar click en{" "}
+            <i>"Aplicar filtro"</i> para hacerlo efectivo. Para reiniciar los
+            filtros escribir "0" en ambos rangos o seleccionar el valor inicial
+            en casos categóricos.
           </p>
         </div>
         <div className="row">
@@ -762,7 +808,7 @@ function AnalysisBirth(props) {
               <div className="col-5">
                 <div className="input-group pb-3">
                   <select class="form-select" onChange={generoSel}>
-                    <option>Seleccione un género</option>
+                    <option value="">Seleccione un género</option>
                     <option value="niño">Niño</option>
                     <option value="niña">Niña</option>
                   </select>
@@ -841,7 +887,7 @@ function AnalysisBirth(props) {
         )}
         <div className="row">
           {Object.entries(pesoNacerPrem).length !== 0 ? (
-            <div className="peso col-4">
+            <div className="peso col-4 group">
               <FilterRange
                 medida={"peso"}
                 medidaFilter={medidasPeso}
@@ -854,7 +900,7 @@ function AnalysisBirth(props) {
             ""
           )}
           {Object.entries(tallaNacerPrem).length !== 0 ? (
-            <div className="talla col-4">
+            <div className="talla col-4 group">
               <FilterRange
                 medida={"talla"}
                 medidaFilter={medidasTalla}
@@ -872,7 +918,7 @@ function AnalysisBirth(props) {
           )}
 
           {Object.entries(pcNacerPrem).length !== 0 ? (
-            <div className="pc col-4">
+            <div className="pc col-4 group">
               <FilterRange
                 medida={"pc"}
                 medidaFilter={medidasPc}
@@ -885,14 +931,14 @@ function AnalysisBirth(props) {
             ""
           )}
           {Object.entries(pesoNacerTerm).length !== 0 ? (
-            <div className="peso col-4">
+            <div className="peso col-4 group pt-5">
               <GroupedBar data={pesoNacerTerm} options={options} height={200} />
             </div>
           ) : (
             ""
           )}
           {Object.entries(tallaNacerTerm).length !== 0 ? (
-            <div className="talla col-4">
+            <div className="talla col-4 group pt-5">
               <GroupedBar
                 data={tallaNacerTerm}
                 options={options}
@@ -903,7 +949,7 @@ function AnalysisBirth(props) {
             ""
           )}
           {Object.entries(pcNacerTerm).length !== 0 ? (
-            <div className="pc col-4">
+            <div className="pc col-4 group pt-5">
               <GroupedBar data={pcNacerTerm} options={options} height={200} />
             </div>
           ) : (
@@ -913,7 +959,7 @@ function AnalysisBirth(props) {
         {Object.entries(rciuRceuPrem).length !== 0 &&
         Object.entries(rciuRceuTerm).length !== 0 ? (
           <div className="rciu">
-            <div className="row pt-4">
+            <div className="row pt-5">
               <h3>
                 <b>Relación RCIU - RCEU</b>
               </h3>
