@@ -74,42 +74,32 @@ const AnalysisGrowth = (props) => {
   const [dataRCIULecheMaterna40With, setDataRCIULecheMaterna40With] = useState(
     {}
   );
-  const [
-    dataRCIULecheMaterna40Without,
-    setDataRCIULecheMaterna40Without,
-  ] = useState({});
+  const [dataRCIULecheMaterna40Without, setDataRCIULecheMaterna40Without] =
+    useState({});
   const [dataRCIULecheMaterna3, setDataRCIULecheMaterna3] = useState({});
   const [dataRCIULecheMaterna3With, setDataRCIULecheMaterna3With] = useState(
     {}
   );
-  const [
-    dataRCIULecheMaterna3Without,
-    setDataRCIULecheMaterna3Without,
-  ] = useState({});
+  const [dataRCIULecheMaterna3Without, setDataRCIULecheMaterna3Without] =
+    useState({});
   const [dataRCIULecheMaterna6, setDataRCIULecheMaterna6] = useState({});
   const [dataRCIULecheMaterna6With, setDataRCIULecheMaterna6With] = useState(
     {}
   );
-  const [
-    dataRCIULecheMaterna6Without,
-    setDataRCIULecheMaterna6Without,
-  ] = useState({});
+  const [dataRCIULecheMaterna6Without, setDataRCIULecheMaterna6Without] =
+    useState({});
   const [dataRCIULecheMaterna9, setDataRCIULecheMaterna9] = useState({});
   const [dataRCIULecheMaterna9With, setDataRCIULecheMaterna9With] = useState(
     {}
   );
-  const [
-    dataRCIULecheMaterna9Without,
-    setDataRCIULecheMaterna9Without,
-  ] = useState({});
+  const [dataRCIULecheMaterna9Without, setDataRCIULecheMaterna9Without] =
+    useState({});
   const [dataRCIULecheMaterna12, setDataRCIULecheMaterna12] = useState({});
   const [dataRCIULecheMaterna12With, setDataRCIULecheMaterna12With] = useState(
     {}
   );
-  const [
-    dataRCIULecheMaterna12Without,
-    setDataRCIULecheMaterna12Without,
-  ] = useState({});
+  const [dataRCIULecheMaterna12Without, setDataRCIULecheMaterna12Without] =
+    useState({});
 
   // States for parallel coords milk
   const [
@@ -189,52 +179,42 @@ const AnalysisGrowth = (props) => {
 
   //* States for years
   const [anioInicial, setAnioInicial] = useState(1993);
-  const [anioFinal, setAnioFinal] = useState(2020);
+  const [anioFinal, setAnioFinal] = useState(2019);
 
   //* States for slider
-  const defaultValues = [1993, 2020];
-  const [domain, setDomain] = useState([1993, 2020]);
+  const defaultValues = [1993, 2019];
+  const [domain, setDomain] = useState([1993, 2019]);
   const [values, setValues] = useState(defaultValues.slice());
   const [update, setUpdate] = useState(defaultValues.slice());
 
   // * States data parallel coords medidas
 
-  const [
-    dataParallelCoordsMedidas40With,
-    setDataParallelCoordsMedidas40With,
-  ] = useState([]);
+  const [dataParallelCoordsMedidas40With, setDataParallelCoordsMedidas40With] =
+    useState([]);
   const [
     dataParallelCoordsMedidas40Without,
     setDataParallelCoordsMedidas40Without,
   ] = useState([]);
-  const [
-    dataParallelCoordsMedidas3With,
-    setDataParallelCoordsMedidas3With,
-  ] = useState([]);
+  const [dataParallelCoordsMedidas3With, setDataParallelCoordsMedidas3With] =
+    useState([]);
   const [
     dataParallelCoordsMedidas3Without,
     setDataParallelCoordsMedidas3Without,
   ] = useState([]);
-  const [
-    dataParallelCoordsMedidas6With,
-    setDataParallelCoordsMedidas6With,
-  ] = useState([]);
+  const [dataParallelCoordsMedidas6With, setDataParallelCoordsMedidas6With] =
+    useState([]);
   const [
     dataParallelCoordsMedidas6Without,
     setDataParallelCoordsMedidas6Without,
   ] = useState([]);
-  const [
-    dataParallelCoordsMedidas9With,
-    setDataParallelCoordsMedidas9With,
-  ] = useState([]);
+  const [dataParallelCoordsMedidas9With, setDataParallelCoordsMedidas9With] =
+    useState([]);
   const [
     dataParallelCoordsMedidas9Without,
     setDataParallelCoordsMedidas9Without,
   ] = useState([]);
-  const [
-    dataParallelCoordsMedidas12With,
-    setDataParallelCoordsMedidas12With,
-  ] = useState([]);
+  const [dataParallelCoordsMedidas12With, setDataParallelCoordsMedidas12With] =
+    useState([]);
   const [
     dataParallelCoordsMedidas12Without,
     setDataParallelCoordsMedidas12Without,

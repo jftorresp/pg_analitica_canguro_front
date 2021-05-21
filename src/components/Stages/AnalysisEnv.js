@@ -62,7 +62,7 @@ const AnalysisEnv = (props) => {
 
   /* States for years */
   const [anioInicial, setAnioInicial] = useState(1993);
-  const [anioFinal, setAnioFinal] = useState(2020);
+  const [anioFinal, setAnioFinal] = useState(2019);
 
   // States for variables select
   const [dataGroup, setDataGroup] = useState([]);
@@ -70,8 +70,8 @@ const AnalysisEnv = (props) => {
   const [filterVars, setFilterVars] = useState(props.inputVars);
 
   // States for slider
-  const defaultValues = [1993, 2020];
-  const [domain, setDomain] = useState([1993, 2020]);
+  const defaultValues = [1993, 2019];
+  const [domain, setDomain] = useState([1993, 2019]);
   const [values, setValues] = useState(defaultValues.slice());
   const [update, setUpdate] = useState(defaultValues.slice());
 
